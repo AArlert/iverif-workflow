@@ -1,0 +1,10 @@
+* text=auto
+
+# Anything executed inside the Linux VM must stay LF even when edited on Windows.
+*.py    text eol=lf
+*.mk    text eol=lf
+*.f     text eol=lf
+*.sh    text eol=lf
+*.yml   text eol=lf
+Makefile         text eol=lf
+templates/pre-commit text eol=lf
