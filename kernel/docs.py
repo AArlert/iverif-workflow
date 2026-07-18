@@ -360,8 +360,13 @@ def cmd_check():
                                   % (i, key))
         except json.JSONDecodeError:
             errors.append("status.jsonl line %d is not valid JSON" % i)
-    if lines:
-        first = json.loads(lines[0])
+    # Re-parse line 1 defensively: if it is broken JSON the loop above has
+    # already recorded the error — degrade instead of crashing.
+    try:
+        first = json.loads(lines[0]) if lines else None
+    except json.JSONDecodeError:
+        first = None
+    if first is not None:
         if len(first.get("summary", "")) > lim["summary_max_chars"]:
             errors.append("status.jsonl line 1 summary exceeds %d chars — "
                           "trim it; details belong in log.md"
