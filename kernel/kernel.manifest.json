@@ -5,7 +5,7 @@
     ".claude/skills/evidence/SKILL.md": "5d1c23d59c4d11385b995fa84d49c9e63c245eefa3efa0bff29d69fcde30df10",
     ".claude/skills/handover/SKILL.md": "41058e4e80ce0706cd1f4b9eeb139edd064b8840c493b9a3ea1c9b02f6b324c0",
     "scripts/bump.py": "cd2a2172f5b46ebbdbc2907d3f5098d647249148b3e4721ba470580ee94aa581",
-    "scripts/docs.py": "3b021805da65db54713b35e59f5f25a231badf179936fb9287f839e2244511d7",
+    "scripts/docs.py": "277a804c88eddd376658a4587fff16a517034ba27fd0557bb681a7765c9ac8cd",
     "scripts/evidence.py": "3ec4a564cf72017c54d0a863c6f3f52099f56d3401b332457a79d39a5491473b",
     "scripts/fwsync.py": "c30364357d9466f6897c05699c0b0d12d9c5728300ab78deb5cf5cc96fe3be9e",
     "scripts/iverif_config.py": "a3fa8a13288e023d37da3441b48969af209e0fa0de138ba055e1faef9d13e436",

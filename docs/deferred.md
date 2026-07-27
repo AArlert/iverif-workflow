@@ -23,6 +23,7 @@ process bug.
 | Presentation layer: mechanical number injection for report/README/defense materials + consistency gate (`report.py`-style, see ppa-lite-copilot 0.5.x R-line) | the first presentation/portfolio material line in any repo (numbers hand-copied into a document = the pain) |
 | `sva_baseline` scaffolding (`make sva-baseline` registers the current floor after rev approval) | the second project to register a baseline by hand |
 | Learning-line per-scenario review gate (✅ additionally requires a review reference) | a milestone spot-check finds unreviewed code already marked ✅, twice |
+| `fwsync --init --allow-existing`: seed into a target that already holds bootstrap files, by an explicit keep/overwrite whitelist rather than a guess | the second repo to hit it (pulp_axi_xbar_copilot hit it once — 2026-07-27, FB-1: host pre-seeded `LICENSE`/`README`/`.claude/settings.local.json`; move-aside workaround is documented in `docs/adoption.md`). Sooner if a repo host makes an empty initial repo impossible to obtain |
 
 ## Graduated (formerly deferred, now built)
 

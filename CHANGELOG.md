@@ -25,7 +25,11 @@ adoption (FB-1~FB-7 in its `doc/fw-feedback.md`); no new mechanism.
   FIX_READY) at delivery — the fix-commit column and FIX_READY don't exist
   yet at DE's delivery time (orch hasn't committed), so the old wording
   tripped `docs-check`'s FIX_READY-needs-fix_commit gate every time.
-  FIX_READY is now explicitly orch's to set once the commit hash is known
+  FIX_READY is now explicitly orch's to set once the commit hash is known.
+  **`kernel/docs.py`**: the copilot `bug_fixing` next-action phrase said
+  "awaiting DE root cause + fix commit" — the same role confusion, relocated
+  to the mechanically-derived surface `make next`, where it would have kept
+  pointing at DE for a hash DE cannot have. Now names orch as the committer
   (FB-5).
 - **`taxonomy/failure_taxonomy.md`**: added an explicit "registration is
   unconditional" sentence — a taxonomy-class anomaly gets a `doc/bugs.md`
@@ -39,7 +43,10 @@ adoption (FB-1~FB-7 in its `doc/fw-feedback.md`); no new mechanism.
 - **`docs/adoption.md`**: playbook 1 documents the move-aside workaround for
   `--init`'s (deliberate — see `docs/deferred.md`) rejection of a target dir
   that already has a few bootstrap files (`LICENSE`/`README`/
-  `.claude/settings.local.json`) in it (FB-1); and notes that Claude Code's
+  `.claude/settings.local.json`) in it — and `docs/deferred.md` now carries
+  the `--allow-existing` row with its trigger, so the decision not to build
+  it is registered where the ledger says such decisions live, not only in
+  adoption prose (FB-1); and notes that Claude Code's
   `.claude/agents/` type registration lags `--init` by a short delay, so the
   first arch/de/dv/rev dispatch right after init may need a session restart
   or a short wait (FB-4).
