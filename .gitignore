@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+
+# Editor / OS junk (same patterns the kernel's junk check hunts in projects)
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
