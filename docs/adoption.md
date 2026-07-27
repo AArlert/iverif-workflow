@@ -79,6 +79,13 @@ Same as scenario 2 with `"profile": "copilot"`, plus:
   `report.py --check` after the pull to confirm.
 - Optionally migrate archives into `doc/archive/` (then drop the
   `archive_dir` override) — do it in a dedicated commit.
+- **Line-ending landmine**: ppa has no `.gitattributes`, and `doc/spec.md`
+  is stored CRLF in the object store (the only such file; harmless while
+  untouched — the spec pin hashes raw bytes, which are stable in the VM).
+  If you add the template `.gitattributes` during migration, renormalizing
+  will rewrite spec.md's bytes and break the sha256 pin — re-pin
+  (`python3 scripts/docs.py --pin-spec`) in the same commit, with a
+  change-record row noting "line-ending normalization, no content change".
 
 ## Upgrading later (any repo)
 
