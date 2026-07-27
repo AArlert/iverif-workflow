@@ -14,6 +14,21 @@ git init && git config core.hooksPath .githooks
 make docs-check && make handover        # both pass on the seed
 ```
 
+`--init` refuses a non-empty target (deliberate: it never wants to guess
+what to keep vs. overwrite — see `docs/deferred.md` on not building
+infrastructure ahead of pain). If `<dir>` already has a few bootstrap files
+in it (e.g. a repo host pre-seeded `LICENSE`/`README`/
+`.claude/settings.local.json` before you ran `--init`), move them aside,
+run `--init` into the now-empty dir, then move them back in and resolve
+any overlap by hand — there is no `--allow-existing` flag (yet).
+
+Claude Code renders `.claude/agents/` (from `--init`) into dispatchable
+agent types mid-session with a short delay — the first arch/de/dv/rev
+dispatch attempted right after `--init` commonly reports "Agent type not
+found". Restart the session (or wait a few minutes for the type to
+register) before dispatching a card; don't burn time debugging the card
+itself.
+
 Then fill in the project half: vendor the DUT (`templates/VENDOR.md` flow),
 write `sim/flist/*.f` + the sim rules (patterns at the tail of
 `scripts/make/vcs-2018.mk`), distill `doc/spec.md` v0 and get it

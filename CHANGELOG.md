@@ -3,6 +3,54 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.2.1 — 2026-07-27
+
+Bug/doc fixes flowed back from `pulp_axi_xbar_copilot`'s first real-world
+adoption (FB-1~FB-7 in its `doc/fw-feedback.md`); no new mechanism.
+
+- **`kernel/evidence.py`** (the one real logic fix): non-UVM tb (ucli
+  `run;exit`-driven `$stop`, e.g. upstream `tb_axi_xbar`) scoreboard verdict
+  lines ("Simulation has ended!", "Tests Failed: 0") commonly print well
+  above the old 2-line `PLAIN_MARK` summary window and matched none of
+  `KEY_LINE_RE` — registered evidence's `## Key check lines` section came up
+  empty even though the underlying two-leg verdict was sound. Widened the
+  plain-VCS summary window (`idx - 2` → `idx - 20`) and added `tests
+  failed`/`ended`/`mismatch` to `KEY_LINE_RE`. New kernel test
+  `test_plain_nonuvm_verdict_line_captured` (`kernel/tests/test_evidence.py`
+  + a `PLAIN_NONUVM_VERDICT_LOG` fixture) pins the regression (FB-6, closes
+  FB-3's open question as a side effect: the native `-assert verbose`
+  `Summary:` line was already confirmed present for this tb shape, it was
+  just outside the old window too).
+- **`agents/de.copilot.md`**: DE now sets bug status **FIXING** (not
+  FIX_READY) at delivery — the fix-commit column and FIX_READY don't exist
+  yet at DE's delivery time (orch hasn't committed), so the old wording
+  tripped `docs-check`'s FIX_READY-needs-fix_commit gate every time.
+  FIX_READY is now explicitly orch's to set once the commit hash is known
+  (FB-5).
+- **`taxonomy/failure_taxonomy.md`**: added an explicit "registration is
+  unconditional" sentence — a taxonomy-class anomaly gets a `doc/bugs.md`
+  row regardless of whether it blocked evidence, was fixed inline in the
+  same card, or looked like "just" a tool quirk.
+  **`agents/{arch,de,dv,rev}.copilot.md`**: each delivery-report format now
+  carries a mandatory "taxonomy-class anomaly hit this card (including
+  worked-around-inline ones): yes/no + BUG-ID" field, closing the gap where
+  only DV's "on a mismatch" case and DE/arch's self-encountered-ambiguity
+  case were covered (FB-7).
+- **`docs/adoption.md`**: playbook 1 documents the move-aside workaround for
+  `--init`'s (deliberate — see `docs/deferred.md`) rejection of a target dir
+  that already has a few bootstrap files (`LICENSE`/`README`/
+  `.claude/settings.local.json`) in it (FB-1); and notes that Claude Code's
+  `.claude/agents/` type registration lags `--init` by a short delay, so the
+  first arch/de/dv/rev dispatch right after init may need a session restart
+  or a short wait (FB-4).
+- **`make/vcs-2018.mk`**: the `LM_LICENSE_FILE` fallback comment now states
+  plainly that it is a placeholder that MUST be overridden per-environment,
+  not a value expected to work as-is (FB-2).
+- FB-3 (whether `-assert verbose`'s native `Summary:` line appears for ucli
+  `run;exit`-driven `$stop` tb) closed via FB-6: downstream confirmed it
+  does appear — the gap was evidence.py's window/regex, not the tool
+  option. No separate change.
+
 ## 0.2.0 — 2026-07-27
 
 Canonical copilot agent suite + the SVA-verdict lessons absorbed from

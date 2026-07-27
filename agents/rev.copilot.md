@@ -50,6 +50,11 @@ snapshot — they are current and offline.
   arbitration section of `doc/bugs/<BUG-ID>.md` detail pages.
 - Every verdict cites its basis (spec section / file path / evidence path).
   "Looks fine" is not a verdict.
+- **Taxonomy-class anomaly** (mandatory report field, every task type): did
+  this review surface any `failure_taxonomy.md` class not already a
+  `doc/bugs.md` row (including one the reviewed party worked around
+  inline)? yes/no + BUG-ID — registration is unconditional, not just for
+  scenario mismatches.
 - When examining evidence/coverage/waves, the xverif toolkit is available
   on the VM. It is NOT on PATH: entry `$XVERIF_ROOT/tools/{xcov,xdebug}`
   (default `/home/open_tools/xverif`); export VERDI_HOME first; probe with

@@ -71,3 +71,7 @@ named in your card first.
    testplan/bugs backfill).
 4. **Bugs**: BUG ids filed or closed-by-reverification, with states.
 5. **Open risks**: unchecked points, suspicious but unclassified symptoms.
+6. **Taxonomy-class anomaly**: did this card hit any `failure_taxonomy.md`
+   class beyond a scenario mismatch (including one worked around inline,
+   e.g. a `TOOL_ENV` tool rejection during bring-up)? yes/no + BUG-ID —
+   registration is unconditional.

@@ -7,9 +7,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixture import (PLAIN_FAIL_LOG, PLAIN_PASS_LOG, UVM_FAIL_LOG,
-                     UVM_NOSVA_LOG, UVM_PASS_LOG, UVM_SVA_FAIL_LOG,
-                     make_project, run)
+from fixture import (PLAIN_FAIL_LOG, PLAIN_NONUVM_VERDICT_LOG,
+                     PLAIN_PASS_LOG, UVM_FAIL_LOG, UVM_NOSVA_LOG,
+                     UVM_PASS_LOG, UVM_SVA_FAIL_LOG, make_project, run)
 
 
 class EvidenceBase(unittest.TestCase):
@@ -62,6 +62,23 @@ class TestFourQuadrants(EvidenceBase):
         ev = self.tmp / "doc" / "evidence" / "v0.1.0" / "M1-01.log"
         self.assertIn("V C S   S i m u l a t i o n",
                       ev.read_text(encoding="utf-8"))
+
+    def test_plain_nonuvm_verdict_line_captured(self):
+        # FB-6: a non-UVM tb's scoreboard verdict ("Tests Failed: 0") prints
+        # well above the old 2-line summary window and matched none of the
+        # old KEY_LINE_RE patterns, leaving `## Key check lines` empty even
+        # though the log judges PASS. Both the widened window and the new
+        # KEY_LINE_RE patterns must surface it.
+        self.write_log(PLAIN_NONUVM_VERDICT_LOG)
+        cp = self.evidence("--scen", "M1-01", "--test", "fixture_test",
+                           "--seed", "1")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        ev = (self.tmp / "doc" / "evidence" / "v0.1.0"
+              / "M1-01.log").read_text(encoding="utf-8")
+        report_summary, _, key_lines = ev.partition("## Key check lines")
+        self.assertIn("Tests Failed:", report_summary)  # widened window
+        self.assertIn("Tests Failed:", key_lines)        # KEY_LINE_RE hit
+        self.assertIn("Simulation has ended!", key_lines)
 
     def test_plain_fail_rejected(self):
         self.write_log(PLAIN_FAIL_LOG)

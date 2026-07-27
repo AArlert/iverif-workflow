@@ -145,6 +145,30 @@ CPU Time: 1.2 seconds
 
 PLAIN_FAIL_LOG = "Error: mismatch at 300ns\n" + PLAIN_PASS_LOG
 
+# Non-UVM tb (ucli `run;exit`-driven `$stop`, e.g. upstream `tb_axi_xbar`)
+# shape: the scoreboard verdict ("Simulation has ended!" / "Tests Failed: 0")
+# prints well before the VCS completion banner, with unrelated tb noise in
+# between — real-world shape that motivated FB-6 (pulp_axi_xbar).
+PLAIN_NONUVM_VERDICT_LOG = """\
+4098918000ns > Master 3: Got last R with id: 01110
+Info: "../vendor/axi/test/tb_axi_xbar_pkg.sv", 73986: tb_axi_xbar_pkg: at time 4098928000 ps
+Simulation has ended!
+Tests Expected:                178296
+Tests Conducted:               178296
+Tests Failed:                       0
+tb_axi_xbar.sv, 261 :           $stop();
+noise line 1
+noise line 2
+noise line 3
+noise line 4
+noise line 5
+noise line 6
+Summary: 4 assertions, 4 with attempts, 0 with failures
+           V C S   S i m u l a t i o n   R e p o r t
+Time: 12000 ns
+CPU Time: 1.2 seconds
+"""
+
 
 def run(root, script, *args, check=False):
     """Run a vendored kernel script; returns CompletedProcess with utf-8

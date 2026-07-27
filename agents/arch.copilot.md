@@ -57,3 +57,6 @@ derivation belongs to DV.
    impacted entries), or "none".
 4. **Open risks**: unresolved architecture questions, pending arbitrations
    (BUG ids).
+5. **Taxonomy-class anomaly**: did this card hit any `failure_taxonomy.md`
+   class (including one worked around inline)? yes/no + BUG-ID —
+   registration is unconditional, not just for scenario mismatches.
