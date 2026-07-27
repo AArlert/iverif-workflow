@@ -58,7 +58,9 @@ snapshot — they are current and offline.
   overall verdict (pass / conditional pass with conditions / rejected with
   gaps).
 - When examining evidence/coverage/waves, the xverif toolkit is available
-  on the VM (`xcov`, `xdebug`, `xsva`, `xloc`); probe with
-  `command -v xcov` first.
+  on the VM (`xcov`, `xdebug`, `xsva`, `xloc`). It is NOT on PATH: entry
+  `$XVERIF_ROOT/tools/` (default `/home/open_tools/xverif`); export
+  VERDI_HOME first; probe with `test -x $XVERIF_ROOT/tools/xcov`, never
+  `command -v`.
 - Token discipline: grep to locate, then read precisely; never bulk-read
   vendor RTL or archives.

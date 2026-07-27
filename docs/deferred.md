@@ -19,11 +19,14 @@ process bug.
 | `make fl` failure-record scaffold + `make guard-verify` (re-inject the original defect, prove the guard fires) | the first FL record with a `regression_guard` lands |
 | `spec_ref` / `coverage_delta` header fields promoted from convention to hard `docs-check` validation | the first coverage-driven milestone signoff |
 | `coverage_delta` auto-capture via `xcov` (xverif toolkit) | same trigger as above, if xcov output proves stable on the VM's Verdi 2018 |
-| Canonical copilot agent suite (arch/de/dv skills + dispatch cards) promoted from ppa-lite-copilot into `agents/` | pulp_axi_xbar_agent repo creation |
 | Dedicated `rca` agent | the same failure class recurring after its FL record said it was guarded |
+| Presentation layer: mechanical number injection for report/README/defense materials + consistency gate (`report.py`-style, see ppa-lite-copilot 0.5.x R-line) | the first presentation/portfolio material line in any repo (numbers hand-copied into a document = the pain) |
+| `sva_baseline` scaffolding (`make sva-baseline` registers the current floor after rev approval) | the second project to register a baseline by hand |
 | Learning-line per-scenario review gate (✅ additionally requires a review reference) | a milestone spot-check finds unreviewed code already marked ✅, twice |
 
 ## Graduated (formerly deferred, now built)
 
-*(empty — move rows here when their trigger fires and the mechanism ships,
-with the framework version that shipped it)*
+| Mechanism | Shipped | Trigger note |
+|---|---|---|
+| Canonical copilot agent suite (`agents/*.copilot.md` + `skills/` incl. the dispatch-card manual) | 0.2.0 | Trigger revised by user ruling (2026-07-27), ahead of the original "pulp_axi_xbar_agent creation": with only `rev` canonical, a `--init --profile copilot` repo could not run the pure-agent workflow at all — the framework was not the single source of truth for half its own contract. Ported from ppa-lite-copilot at 0.5.8 (includes its BUG-014/016/017 lessons). |
+| SVA assertion leg of the log verdict (`kernel/svacheck.py`, two-leg judge in evidence/regress) | 0.2.0 | Trigger fired in ppa-lite-copilot as BUG-014 (assertion failures invisible to UVM_ERROR); absorbed with the BUG-017/018 adversarial hardenings. |

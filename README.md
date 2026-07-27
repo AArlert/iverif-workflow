@@ -68,7 +68,7 @@ register scenario → write code → make run → make evidence → (review) →
 | | `learning` | `copilot` |
 |---|---|---|
 | Who writes the UVM code | the human | agents |
-| Agent role | `rev` only: reviews evidence against the six questions, mentors with principles — never code | full chain (planner/coder/runner/rca/rev) |
+| Agent role | `rev` only: reviews evidence against the six questions, mentors with principles — never code | full chain: orch dispatches arch / de / dv / rev (canonical suite in `agents/`, dispatch-card manual in `skills/dispatch/`) |
 | Guard strictness | few, high-value checks | full check set |
 
 Set once in `iverif.json`; the kernel branches internally. The multi-role

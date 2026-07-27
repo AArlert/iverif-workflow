@@ -66,9 +66,12 @@ Failures: never registered as evidence. Triage with
 
 ## §4 Environment
 
-- Simulation runs in the VM (Ubuntu 22.04, VCS/Verdi O-2018, xverif toolkit
-  on PATH: `xdebug`/`xcov`/`xsva`/`xloc` — probe with `command -v xcov`).
-  Known tool workarounds: `scripts/make/vcs-2018.mk` header.
+- Simulation runs in the VM (Ubuntu 22.04, VCS/Verdi O-2018). Known tool
+  workarounds: `scripts/make/vcs-2018.mk` header. The xverif toolkit
+  (`xdebug`/`xcov`/`xsva`/`xloc`) is NOT on PATH: entry
+  `$XVERIF_ROOT/tools/` (default `/home/open_tools/xverif`, exported by
+  `scripts/make/vcs-2018.mk`); export VERDI_HOME first; probe with
+  `test -x $XVERIF_ROOT/tools/xcov`, never `command -v`.
 - This repo is developed on the host and cloned into the VM; line endings
   are pinned by `.gitattributes` — do not fight it.
 
@@ -77,8 +80,9 @@ Failures: never registered as evidence. Triage with
 - Conventional commits. Evidence lands in the same commit as the code it
   certifies. Push after closeout.
 - Hooks: `git config core.hooksPath .githooks` once per clone.
-- `scripts/` and `workflow/` are a hash-pinned framework snapshot
-  (`make fw-check`). Improvements flow to the framework repo first:
+- `scripts/`, `workflow/`, and `.claude/skills/` are a hash-pinned
+  framework snapshot (`make fw-check`); `.claude/agents/` is regenerated on
+  every pull. Improvements flow to the framework repo first:
   <https://github.com/AArlert/iverif-workflow>
 
 ## §6 Project specifics

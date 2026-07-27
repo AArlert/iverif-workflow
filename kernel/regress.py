@@ -3,11 +3,19 @@
 # each log, write sim/result_summary.txt.
 # List format (sim/regress/regress.list): one "<TEST> <SEED>" per line,
 # '#' starts a comment.
+#
+# The verdict is two-legged (svacheck.judge): (1) UVM summary / VCS banner,
+# (2) SVA assertion layers. Assertion failures do NOT increment UVM_ERROR —
+# a one-legged check waves the whole class through (ppa BUG-014).
+# The first column of result_summary.txt keeps its fixed token set
+# (PASS/FAIL/NOLOG/NOSUMMARY); new failure causes ride the reason suffix so
+# downstream line-counting stays stable.
 import subprocess
 import sys
 from datetime import date
 
-from iverif_config import load_config, log_verdict
+import svacheck
+from iverif_config import load_config
 
 
 def main():
@@ -41,6 +49,7 @@ def main():
     # remembering to `make clean`.
     subprocess.run(["make", "-C", str(sim), "clean"], check=True)
 
+    baseline = svacheck.load_baseline(cfg)
     results = []
     for test, seed in entries:
         print("== regress: %s SEED=%s ==" % (test, seed), flush=True)
@@ -49,19 +58,32 @@ def main():
              "SEED=%s" % seed, "COV=%s" % cov],
         ).returncode
         log = cfg.sim_log_path(test, seed)
+        sva = None
         if not log.exists():
-            verdict = "NOLOG"
+            verdict, reason = "NOLOG", ""
         else:
-            verdict = log_verdict(
-                log.read_text(encoding="utf-8", errors="replace"))
+            verdict, reason, sva = svacheck.judge(
+                log.read_text(encoding="utf-8", errors="replace"), cfg,
+                baseline=baseline)
         if rc != 0 and verdict == "PASS":
-            verdict = "FAIL"  # abnormal sim exit never counts as a pass
-        results.append((test, seed, verdict))
+            # abnormal sim exit never counts as a pass
+            verdict, reason = "FAIL", "sim process exited nonzero"
+        if verdict != "PASS":
+            print("   -> %s %s" % (verdict, reason), flush=True)
+            if sva is not None and sva.failed:
+                for line in sva.detail_lines():
+                    print(line, flush=True)
+        results.append((test, seed, verdict, reason))
 
-    passed = sum(1 for _, _, v in results if v == "PASS")
-    lines = ["%s regression  date=%s  passed=%d/%d"
-             % (cfg.project, date.today(), passed, len(results))]
-    lines += ["%-6s %s SEED=%s" % (v, t, s) for t, s, v in results]
+    passed = sum(1 for _, _, v, _ in results if v == "PASS")
+    n_sva = sum(1 for _, _, _, r in results if "SVA" in r)
+    head = ("%s regression  date=%s  passed=%d/%d"
+            % (cfg.project, date.today(), passed, len(results)))
+    if n_sva:
+        head += "  (%d with SVA assertion causes)" % n_sva
+    lines = [head]
+    lines += ["%-6s %s SEED=%s%s" % (v, t, s, "  [%s]" % r if r else "")
+              for t, s, v, r in results]
     summary_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n" + "\n".join(lines))
     print("\nsummary written to %s" % summary_path.relative_to(cfg.root))

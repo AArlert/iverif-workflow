@@ -32,6 +32,22 @@ HERE = Path(__file__).resolve().parent
 VENDOR_REF_DIRS = ("schema", "taxonomy", "dispatch", "signoff")
 MANIFEST = "iverif.manifest.json"
 
+# Skills vendored into <proj>/.claude/skills/ (hash-pinned like workflow/).
+# dispatch is the orch operating manual — copilot only; a learning repo
+# carrying it would invite the main session to start dispatching de/dv
+# cards, which is exactly what the learning profile forbids.
+SKILLS_COMMON = ("handover", "evidence", "closeout")
+SKILLS_COPILOT = ("dispatch",)
+
+# Agent templates rendered per profile: (template name, output name).
+AGENT_SETS = {
+    "learning": (("rev.learning.md", "rev.md"),),
+    "copilot": (("arch.copilot.md", "arch.md"),
+                ("de.copilot.md", "de.md"),
+                ("dv.copilot.md", "dv.md"),
+                ("rev.copilot.md", "rev.md")),
+}
+
 # Seed-only column names (used in generated tables but not read by the
 # kernel, so they live here rather than in COLUMN_PRESETS).
 SEED_EXTRA = {
@@ -82,8 +98,11 @@ def fw_version(fw):
     return (fw / "VERSION").read_text(encoding="utf-8").strip()
 
 
-def vendor_pairs(fw):
-    """(source file, dest path relative to project root) for the snapshot."""
+def vendor_pairs(fw, profile=None):
+    """(source file, dest path relative to project root) for the snapshot.
+    profile "all" = framework-side full manifest; "copilot" adds the
+    copilot-only skills; "learning"/None (unknown, e.g. a legacy repo's
+    first pull before iverif.json exists) get the common set only."""
     pairs = []
     for py in sorted((fw / "kernel").glob("*.py")):
         pairs.append((py, Path("scripts") / py.name))
@@ -95,6 +114,12 @@ def vendor_pairs(fw):
     prof = fw / "docs" / "profiles.md"
     if prof.exists():
         pairs.append((prof, Path("workflow") / "profiles.md"))
+    skills = SKILLS_COMMON + (SKILLS_COPILOT
+                              if profile in ("all", "copilot") else ())
+    for name in skills:
+        f = fw / "skills" / name / "SKILL.md"
+        if f.exists():
+            pairs.append((f, Path(".claude") / "skills" / name / "SKILL.md"))
     return pairs
 
 
@@ -112,7 +137,8 @@ def render(text, ctx):
 
 def cmd_gen_manifest():
     fw = framework_root()
-    files = {rel_key(dest): norm_sha(src) for src, dest in vendor_pairs(fw)}
+    files = {rel_key(dest): norm_sha(src)
+             for src, dest in vendor_pairs(fw, profile="all")}
     manifest = {"version": fw_version(fw), "files": files}
     out = fw / "kernel" / "kernel.manifest.json"
     out.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n",
@@ -153,8 +179,22 @@ def cmd_check():
 
 def do_pull(fw, proj):
     ver = fw_version(fw)
+
+    # Profile decides the vendor set and the agent suite, so read the
+    # config first (a legacy repo's very first pull may predate it).
+    cfg_path = proj / "iverif.json"
+    profile = None
+    project_name = proj.name
+    if cfg_path.exists():
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+        cfg["framework"] = ver
+        cfg_path.write_text(json.dumps(cfg, ensure_ascii=False, indent=2)
+                            + "\n", encoding="utf-8")
+        profile = cfg.get("profile")
+        project_name = cfg.get("project_name", proj.name)
+
     files = {}
-    for src, dest in vendor_pairs(fw):
+    for src, dest in vendor_pairs(fw, profile=profile):
         target = proj / dest
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(str(src), str(target))
@@ -163,36 +203,27 @@ def do_pull(fw, proj):
         json.dumps({"framework": ver, "files": files}, indent=2,
                    sort_keys=True) + "\n", encoding="utf-8")
 
-    # Record the pulled version in iverif.json (visible in diffs).
-    cfg_path = proj / "iverif.json"
-    profile = None
-    if cfg_path.exists():
-        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
-        cfg["framework"] = ver
-        cfg_path.write_text(json.dumps(cfg, ensure_ascii=False, indent=2)
-                            + "\n", encoding="utf-8")
-        profile = cfg.get("profile")
-        project_name = cfg.get("project_name", proj.name)
-    else:
-        project_name = proj.name
+    # Re-render the canonical agent suite from the framework templates.
+    # Rendered files are regenerated (and overwritten) on every pull —
+    # project-specific rules belong in CLAUDE.md, never in these files.
+    for tpl_name, out_name in AGENT_SETS.get(profile, ()):
+        tpl = fw / "agents" / tpl_name
+        if not tpl.exists():
+            continue
+        out = proj / ".claude" / "agents" / out_name
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(render(tpl.read_text(encoding="utf-8"),
+                              {"PROJECT_NAME": project_name,
+                               "FRAMEWORK_VERSION": ver}),
+                       encoding="utf-8")
+        print("rendered .claude/agents/%s" % out_name)
+    if profile is None:
+        print("note: no iverif.json yet — pulled the common set only; "
+              "create iverif.json (see workflow/profiles.md) and re-pull "
+              "to render the agent suite")
 
-    # Re-render canonical agent definitions from the framework template.
-    if profile == "learning":
-        tpl = fw / "agents" / "rev.learning.md"
-        if tpl.exists():
-            out = proj / ".claude" / "agents" / "rev.md"
-            out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(render(tpl.read_text(encoding="utf-8"),
-                                  {"PROJECT_NAME": project_name,
-                                   "FRAMEWORK_VERSION": ver}),
-                           encoding="utf-8")
-            print("rendered .claude/agents/rev.md")
-    elif profile == "copilot":
-        print("note: canonical copilot agent suite is still deferred "
-              "(workflow/../docs/deferred.md) — keep project-local agents")
-
-    print("pulled framework %s: %d files into scripts/ + workflow/"
-          % (ver, len(files)))
+    print("pulled framework %s: %d files into scripts/ + workflow/ + "
+          ".claude/skills/" % (ver, len(files)))
     print("review the framework CHANGELOG for behavior changes, then run "
           "your project selftest / make docs-check")
 
@@ -305,7 +336,8 @@ def cmd_init(target, profile, columns, project_name):
            "columns_preset": columns,
            "delivery": {"glob": "tb/{name}.sv"},
            "sim_log": "sim/out/{test}_{seed}.log",
-           "fl_schema_enforce": True}
+           "fl_schema_enforce": True,
+           "sva_enforce": True}
     (proj / "iverif.json").write_text(
         json.dumps(cfg, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8")
@@ -320,7 +352,8 @@ def cmd_init(target, profile, columns, project_name):
         render((tpl / "Makefile.project").read_text(encoding="utf-8"), ctx),
         encoding="utf-8")
     (proj / "CLAUDE.md").write_text(
-        render((tpl / "CLAUDE.project.md").read_text(encoding="utf-8"), ctx),
+        render((tpl / ("CLAUDE.project.%s.md" % profile))
+               .read_text(encoding="utf-8"), ctx),
         encoding="utf-8")
     (proj / ".gitignore").write_text(
         (tpl / "gitignore").read_text(encoding="utf-8"), encoding="utf-8")

@@ -13,6 +13,12 @@
 #   clean-before-regress - stale .daidir/csrc from a different option set
 #               (e.g. lint) corrupts incremental builds (VFS_SDB_ERROR class);
 #               regress.py already cleans first.
+#   SIM_OPTS_2018 (-assert verbose) - SVA failures do NOT increment
+#               UVM_ERROR and do not change the simv exit code; the native
+#               "Summary: N assertions, ..." line this option prints is the
+#               only structured proof of assertion cleanliness, and
+#               evidence.py/regress.py fail-closed without it (ppa BUG-014).
+#               Never drop it from the run rule.
 
 # ---- EDA environment fallback (non-interactive shells skip ~/.bashrc) ----
 export VCS_HOME        ?= /home/synopsys/vcs-mx/O-2018.09-SP2
@@ -23,6 +29,11 @@ export LM_LICENSE_FILE ?= 27000@localhost
 export VCS_ARCH_OVERRIDE ?= linux
 export LD_LIBRARY_PATH := $(VERDI_HOME)/share/PLI/VCS/LINUX64:$(LD_LIBRARY_PATH)
 export PATH := $(VCS_HOME)/bin:$(VERDI_HOME)/bin:$(SCL_HOME)/linux64/bin:$(PATH)
+
+# xverif toolkit (VM instruments; NOT on PATH — call via full path).
+# Probe with `test -x $(XVERIF_ROOT)/tools/xdebug`, never `command -v`;
+# xdebug/xcov need VERDI_HOME exported first (both handled above).
+export XVERIF_ROOT ?= /home/open_tools/xverif
 
 OUT  ?= out
 COV  ?= 0
@@ -40,6 +51,9 @@ VCS_FLAGS_2018 := -full64 -sverilog -timescale=1ns/1ps -ntb_opts uvm-1.2 \
                   -assert svaext -debug_access+all -kdb +vcs+lic+wait \
                   $(LD_FIX) $(NOVAS)
 
+# Runtime (simv) options — pinned, see SIM_OPTS_2018 note in the header.
+SIM_OPTS_2018 := -assert verbose
+
 # ---- coverage: the six-type yardstick ----
 ifeq ($(COV),1)
 CM := -cm line+cond+fsm+tgl+branch+assert -cm_dir $(OUT)/cov.vdb
@@ -55,7 +69,8 @@ endif
 #
 #   compile:  $(VCS) $(VCS_FLAGS_2018) $(if $(filter 1,$(COV)),$(CM)) \
 #                 $(FLISTS) -top $(TOP) -o $(OUT)/simv -l $(OUT)/comp.log
-#   run:      $(OUT)/simv +UVM_TESTNAME=$(TEST) +ntb_random_seed=$(SEED) \
+#   run:      $(OUT)/simv $(SIM_OPTS_2018) +UVM_TESTNAME=$(TEST) \
+#                 +ntb_random_seed=$(SEED) \
 #                 $(if $(filter 1,$(COV)),$(CM) -cm_name $(TEST)_$(SEED)) \
 #                 -l $(OUT)/$(TEST)_$(SEED).log
 #   covreset: $(MAKE) run TEST=<reset_test> SEED=1 COV=1 OUT=cov_reset

@@ -106,6 +106,14 @@ class Config:
         self.sim_log = raw.get("sim_log", "sim/out/{test}_{seed}.log")
         self.signoff_glob = raw.get("signoff_glob", "signoff-M{m}*.md")
         self.fl_enforce = raw.get("fl_schema_enforce", True)
+        # SVA leg (svacheck.py): assertion failures do NOT increment
+        # UVM_ERROR, so they are judged independently of log_verdict.
+        # sva_enforce: a log without the native '-assert verbose' Summary
+        # line is FAIL (fail-closed); legacy flows set false until they
+        # adopt the vendored run pattern. sva_baseline: optional path to a
+        # registered total_min/attempted_min floor file (layer 3).
+        self.sva_enforce = raw.get("sva_enforce", True)
+        self.sva_baseline = raw.get("sva_baseline")
         self.limits = dict(LIMIT_DEFAULTS)
         self.limits.update(raw.get("limits", {}))
 

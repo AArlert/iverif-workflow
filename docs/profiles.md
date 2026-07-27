@@ -12,6 +12,8 @@ and its agent twin can be compared claim by claim.
 |---|---|---|
 | Who writes RTL/TB code | the human (main session may scaffold compilable skeletons: signatures + TODOs only) | agents (de/dv or coder) |
 | Agent set | `rev` only | orch (main session) + arch / de / dv / rev |
+| Agent definitions | `.claude/agents/rev.md` rendered from `agents/rev.learning.md` | `.claude/agents/{arch,de,dv,rev}.md` rendered from `agents/*.copilot.md` — regenerated on every `fwsync --pull`; project-specific rules go in CLAUDE.md §Project specifics, never in these files |
+| Skills (`.claude/skills/`, hash-pinned) | handover / evidence / closeout | the same three + `dispatch` (the orch card manual: model tiers, must-include/forbidden matrix, isolation self-check) |
 | `rev` role | reviewer **and mentor**: written reviews with principles and direction, never implementations, never code edits | reviewer/arbiter: gate reviews, bug adjudication, milestone signoff |
 | Who produces evidence | the human runs `make evidence` | runner/dv agents run `make evidence` |
 | `--next` wording | addresses the human ("write...", "run...", "request a review of...") | addresses orch ("dispatch a de card...", "dispatch rev...") |

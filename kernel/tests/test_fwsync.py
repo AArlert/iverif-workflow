@@ -69,6 +69,37 @@ class TestInit(FwsyncBase):
         cp = run_py(self.proj / "scripts" / "docs.py", "--check")
         self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
 
+    def test_learning_init_agent_and_skill_set(self):
+        self.init_project()
+        agents = self.proj / ".claude" / "agents"
+        self.assertTrue((agents / "rev.md").exists())
+        self.assertEqual([p.name for p in agents.glob("*.md")], ["rev.md"])
+        skills = self.proj / ".claude" / "skills"
+        for name in ("handover", "evidence", "closeout"):
+            self.assertTrue((skills / name / "SKILL.md").exists(), name)
+        # the orch dispatch manual must NOT reach a learning repo
+        self.assertFalse((skills / "dispatch" / "SKILL.md").exists())
+
+    def test_copilot_init_renders_full_suite(self):
+        self.init_project("--profile", "copilot", "--project", "my_dut")
+        agents = self.proj / ".claude" / "agents"
+        for name in ("arch", "de", "dv", "rev"):
+            f = agents / ("%s.md" % name)
+            self.assertTrue(f.exists(), name)
+            text = f.read_text(encoding="utf-8")
+            self.assertIn("my_dut", text)
+            self.assertNotIn("{{", text)  # no unrendered placeholders
+        self.assertTrue((self.proj / ".claude" / "skills" / "dispatch"
+                         / "SKILL.md").exists())
+        claude = (self.proj / "CLAUDE.md").read_text(encoding="utf-8")
+        self.assertIn("orch", claude)
+        self.assertIn("Instance isolation", claude)
+        # skills are part of the pinned snapshot; the whole init is green
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        cp = run_py(self.proj / "scripts" / "docs.py", "--check")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+
     def test_init_refuses_nonempty_target(self):
         self.proj.mkdir()
         (self.proj / "stuff.txt").write_text("x", encoding="utf-8")
@@ -142,8 +173,11 @@ class TestGenManifest(FwsyncBase):
                        .read_text(encoding="utf-8"))
         keys = set(m["files"])
         self.assertIn("scripts/docs.py", keys)
+        self.assertIn("scripts/svacheck.py", keys)
         self.assertIn("scripts/make/vcs-2018.mk", keys)
         self.assertIn("workflow/schema/evidence_record.md", keys)
+        self.assertIn(".claude/skills/handover/SKILL.md", keys)
+        self.assertIn(".claude/skills/dispatch/SKILL.md", keys)
         self.assertNotIn("scripts/iverif.manifest.json", keys)
 
 

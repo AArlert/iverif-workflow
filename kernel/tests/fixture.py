@@ -114,13 +114,29 @@ UVM_INFO :    5
 UVM_WARNING :    0
 UVM_ERROR :    0
 UVM_FATAL :    0
+Summary: 12 assertions, 12 with attempts, 0 with failures
 """
 
 UVM_FAIL_LOG = UVM_PASS_LOG.replace("UVM_ERROR :    0", "UVM_ERROR :    2")
 
+# The BUG-014 shape: UVM side spotless (UVM_ERROR : 0) while the SVA engine
+# reports a failed assertion — $error in an action block never reaches the
+# UVM report server. Includes the real-world same-line tail form.
+UVM_SVA_FAIL_LOG = UVM_PASS_LOG.replace(
+    "Summary: 12 assertions, 12 with attempts, 0 with failures",
+    '"../tb/sva/fixture_sva.sv", 45: tb_top.dut.a_done_hold: '
+    "started at 155000ps failed at 165000ps  Offending 'done_o'\n"
+    "Summary: 12 assertions, 12 with attempts, 1 with failures")
+
+# A log produced without `-assert verbose`: clean UVM summary, no native
+# assertion Summary line — unprovable, rejected under sva_enforce.
+UVM_NOSVA_LOG = UVM_PASS_LOG.replace(
+    "Summary: 12 assertions, 12 with attempts, 0 with failures\n", "")
+
 PLAIN_PASS_LOG = """\
 some tb output
 final checks: 128 compare ok
+Summary: 4 assertions, 4 with attempts, 0 with failures
 $finish called
            V C S   S i m u l a t i o n   R e p o r t
 Time: 12000 ns

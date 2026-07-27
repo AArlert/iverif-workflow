@@ -19,13 +19,21 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from iverif_config import load_config, log_verdict
+import svacheck
+from iverif_config import load_config
 
 CFG = None
 
 SUMMARY_MARK = "UVM Report Summary"
 PLAIN_MARK = "V C S   S i m u l a t i o n"
-KEY_LINE_RE = re.compile(r"(?i)\b(pass|match|compare ok|check ok)\b")
+# Key-line extraction. `running test` (the UVM `[RNTST] Running test <name>`
+# line) is included as an identity anchor: checks that print only at
+# UVM_HIGH verbosity leave the key-line section empty at default verbosity,
+# and the RNTST line at least pins the excerpt to a concrete test — together
+# with the SVA summary and the report summary it stays re-judgeable
+# (ppa-lite-copilot BUG-017 R7).
+KEY_LINE_RE = re.compile(r"(?i)\b(pass|match|compare ok|check ok"
+                         r"|running test)\b")
 KEY_LINES_MAX = 30
 
 
@@ -36,17 +44,25 @@ def read_version():
 
 def extract(log_path, rid):
     """Mechanical extraction: UVM Report Summary section (or the VCS
-    completion banner for non-UVM TBs) + key PASS/compare lines + lines
-    mentioning the scenario id. FAIL logs are rejected — failures are filed
-    in bugs.md, never registered as evidence."""
+    completion banner for non-UVM TBs) + SVA assertion summary + key
+    PASS/compare lines + lines mentioning the scenario id. FAIL logs are
+    rejected — failures are filed in bugs.md, never registered as evidence.
+
+    The verdict is two-legged (svacheck.judge): assertion failures do not
+    increment UVM_ERROR, so a log can read `UVM_ERROR : 0` while assertions
+    failed or were silenced — leg 2 judges them independently."""
     text = log_path.read_text(encoding="utf-8", errors="replace")
-    verdict = log_verdict(text)
+    verdict, reason, sva = svacheck.judge(
+        text, CFG, baseline=svacheck.load_baseline(CFG))
     if verdict == "NOSUMMARY":
         sys.exit("log has neither a UVM summary nor a VCS completion banner "
                  "— cannot judge the result: %s" % log_path)
     if verdict == "FAIL":
-        sys.exit("log judged FAIL — FAIL logs are never evidence; file the "
-                 "failure in bugs.md (source: %s)" % log_path)
+        detail = "\n".join(sva.detail_lines()) if sva and sva.failed else ""
+        sys.exit("log judged FAIL (%s) — FAIL logs are never evidence; file "
+                 "the failure in bugs.md (source: %s)%s"
+                 % (reason, log_path,
+                    "\nfailing assertions:\n%s" % detail if detail else ""))
     lines = text.splitlines()
     idx = next((i for i, l in enumerate(lines) if SUMMARY_MARK in l), None)
     if idx is not None:
@@ -54,8 +70,11 @@ def extract(log_path, rid):
     else:
         idx = next(i for i, l in enumerate(lines) if PLAIN_MARK in l)
         summary = lines[max(0, idx - 2):idx + 8]
+    # Archive the native assertion-count lines with the excerpt so the
+    # evidence itself stays independently re-judgeable by svacheck.py.
+    sva_lines = [l for l in lines if svacheck.SUMMARY_RE.match(l)]
     keys = [l for l in lines if KEY_LINE_RE.search(l) or rid in l]
-    return summary, keys[:KEY_LINES_MAX]
+    return summary, sva_lines, keys[:KEY_LINES_MAX]
 
 
 def update_row(path, id_col, id_val, updates):
@@ -108,7 +127,7 @@ def main():
     if not log_path.exists():
         sys.exit("sim log not found: %s (no log, no evidence)" % log_path)
 
-    summary, keys = extract(log_path, rid)
+    summary, sva_lines, keys = extract(log_path, rid)
     cmd = "make run TEST=%s SEED=%s" % (args.test, args.seed)
     ev_dir = CFG.evidence_dir / ("v%s" % read_version())
     ev_dir.mkdir(parents=True, exist_ok=True)
@@ -121,6 +140,10 @@ def main():
     if args.spec_ref:
         body.append("# spec_ref: %s" % args.spec_ref)
     body += ["", "## Report Summary", *summary,
+             "", "## SVA assertion summary (VCS -assert verbose native "
+             "counts; zero failures required)",
+             *(sva_lines
+               or ["(no native summary in source log — sva_enforce off)"]),
              "", "## Key check lines", *keys, ""]
     ev_path.write_text("\n".join(body), encoding="utf-8")
     rel = str(ev_path.relative_to(CFG.root)).replace("\\", "/")
