@@ -43,7 +43,7 @@ project. That is how mechanism drift (the reason this repo exists — see
 | `make/` | Includable make fragments: `core.mk`, `evidence.mk`, `vcs-2018.mk` |
 | `templates/` | Project seeds: gitignore, gitattributes, CI, pre-commit hook, VENDOR.md, CLAUDE.md, empty `doc/` tree |
 | `config/` | `iverif.json` reference + column-name presets (en/zh) |
-| `docs/` | Adoption playbooks, profile contracts, deferred-mechanism ledger |
+| `docs/` | Adoption playbooks, profile contracts, deferred-mechanism ledger, and `discipline.md` — the execution rules every role reads first (vendored into projects as `workflow/discipline.md`) |
 
 ## 60-second start (new project)
 

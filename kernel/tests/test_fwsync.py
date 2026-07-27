@@ -62,6 +62,20 @@ class TestInit(FwsyncBase):
         self.assertIn("my_dut", text)
         self.assertNotIn("{{PROJECT_NAME}}", text)
 
+    def test_discipline_reaches_project_and_every_role_points_at_it(self):
+        # The execution rules are only worth having if they arrive with the
+        # snapshot and every actor is told to read them. The text lives in
+        # workflow/ alone — CLAUDE.md and the role files carry pointers, so
+        # a local restatement can never drift out of sync with canon.
+        self.init_project("--profile", "copilot")
+        self.assertTrue((self.proj / "workflow" / "discipline.md").exists())
+        claude = (self.proj / "CLAUDE.md").read_text(encoding="utf-8")
+        self.assertIn("workflow/discipline.md", claude)
+        for role in ("arch", "de", "dv", "rev"):
+            text = ((self.proj / ".claude" / "agents" / ("%s.md" % role))
+                    .read_text(encoding="utf-8"))
+            self.assertIn("workflow/discipline.md", text, role)
+
     def test_init_zh_columns_pass_gates(self):
         self.init_project("--columns", "zh")
         tp = (self.proj / "doc" / "testplan.md").read_text(encoding="utf-8")
@@ -74,6 +88,9 @@ class TestInit(FwsyncBase):
         agents = self.proj / ".claude" / "agents"
         self.assertTrue((agents / "rev.md").exists())
         self.assertEqual([p.name for p in agents.glob("*.md")], ["rev.md"])
+        for f in (self.proj / "CLAUDE.md", agents / "rev.md"):
+            self.assertIn("workflow/discipline.md",
+                          f.read_text(encoding="utf-8"), f.name)
         skills = self.proj / ".claude" / "skills"
         for name in ("handover", "evidence", "closeout"):
             self.assertTrue((skills / name / "SKILL.md").exists(), name)

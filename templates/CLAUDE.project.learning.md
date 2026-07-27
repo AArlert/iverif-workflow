@@ -8,6 +8,14 @@ Profile: **{{PROFILE}}** (see `workflow/profiles.md`). The workflow rules
 live in the `workflow/` snapshot — read them there (offline-safe); do not
 restate or fork them here.
 
+> **Read first, every session: `workflow/discipline.md`** — execution
+> discipline (think before coding · simplicity first · surgical changes ·
+> goal-driven execution · small closed loops). It binds the main session
+> and rev, and it outranks convenience: prefer it over the faster path. It
+> sits below the core invariants and §0's role split — those are hard
+> gates, discipline is how you behave between them. The text lives only in
+> the snapshot, so it can never drift here.
+
 ## §0 Roles
 
 <!-- learning profile -->

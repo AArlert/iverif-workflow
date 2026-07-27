@@ -8,6 +8,15 @@ Profile: **{{PROFILE}}** (see `workflow/profiles.md`). The workflow rules
 live in the `workflow/` snapshot — read them there (offline-safe); do not
 restate or fork them here.
 
+> **Read first, every session: `workflow/discipline.md`** — execution
+> discipline (think before coding · simplicity first · surgical changes ·
+> goal-driven execution · small closed loops). It binds orch and every
+> dispatched role, and it outranks convenience: prefer it over the faster
+> path. It sits below the core invariants and the isolation rules in §0 —
+> those are hard gates, discipline is how you behave between them. Every
+> role file repeats the pointer; the text itself lives only in the
+> snapshot, so it can never drift here.
+
 ## §0 Roles and isolation (hard rules)
 
 - **orch (main session, you)**: pure dispatcher — assembles cards

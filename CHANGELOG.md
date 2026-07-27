@@ -3,6 +3,37 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.3.0 — 2026-07-27
+
+Execution discipline promoted to canon and given priority over convenience.
+
+- **New `docs/discipline.md`**, vendored to every project as
+  `workflow/discipline.md` (26th pinned file): five rules — think before
+  coding · simplicity first · surgical changes · goal-driven execution ·
+  small closed loops. Rules 1–4 are adapted from Andrej Karpathy's
+  LLM-coding guidelines (multica-ai/andrej-karpathy-skills), each fused to
+  the pain this framework already banked rather than pasted: "don't assume"
+  binds to SPEC_ISSUE + the spec-not-RTL input boundary; "simplicity first"
+  binds to the deferred ledger and carves out an explicit exception for
+  fail-closed gates (never simplify a gate open to pass your own card);
+  "surgical changes" binds to unconditional taxonomy registration and to
+  the fw-check no-local-edit rule; "goal-driven" binds to the machine
+  verdict (*if you cannot state the goal as a gate that passes, restate the
+  goal*). Rule 5 is framework-native, contributed by pulp_axi_xbar_copilot.
+- **Priority is explicit**: above convenience, below the four core
+  invariants and the role isolation boundaries — discipline governs the
+  space between the gates, where no script is watching.
+- **Propagation**: `CLAUDE.project.{learning,copilot}.md` carry a
+  read-first pointer under the profile line; all five role templates
+  (`agents/*.copilot.md`, `agents/rev.learning.md`) repeat it above their
+  first instruction, rev additionally review-enforces it. Only pointers
+  travel — the text lives solely in the snapshot, so it cannot drift into a
+  stale local restatement (the failure mode 0.2.1 had just cleaned up
+  twice: FB-7's duplicated taxonomy rule and FB-5's contradictory role
+  wording).
+- Tests: 47 → 48 (the doc reaches `workflow/`, and CLAUDE.md + every
+  rendered role file point at it, in both profiles).
+
 ## 0.2.1 — 2026-07-27
 
 Bug/doc fixes flowed back from `pulp_axi_xbar_copilot`'s first real-world
