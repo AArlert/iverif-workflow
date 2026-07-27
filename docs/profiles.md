@@ -83,5 +83,22 @@ and records the mapping:
 | rca | dv + `dispatch/` decision tables today; a dedicated rca agent is deferred until the same bug class recurs (see deferred.md) |
 | rev | rev (unchanged — the only role with signoff authority) |
 
-Agents never talk to each other directly; every handoff goes through evidence
-files. That rule is what makes the whole flow replayable and auditable.
+## Why handoffs are files, not conversation
+
+Agents never talk to each other directly; every handoff goes through records
+— cards, evidence, FL pages, reviews. That rule is what makes the whole flow
+replayable and auditable, and it has been challenged on the record (external
+review, 2026-07-26: allow "ephemeral collaboration" as long as final
+conclusions land in evidence). Declined, because the channel that proposal
+reopens is exactly the one the isolation exists to close: the moment DE's
+reasoning reaches DV outside a card, DV's expected values can drift from
+"derived from the spec" to "agreed with the implementation" — and no gate
+can tell the difference afterwards. A side channel that "only carries
+context" is precisely how two roles end up staring at the same wrong thing.
+
+The acknowledged cost is duplicated digging: two roles may trace the same
+waveform. The remedy is the archive, not a chat line — dispatch Q1 makes
+`grep doc/bugs/` mandatory before fresh analysis, and a fact worth a second
+reader is worth a record line. If the same waveform gets dug twice because
+the first dig wrote nothing down, that is a retention failure (six
+questions, Q6): fix the record, not the firewall.

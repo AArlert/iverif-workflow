@@ -3,6 +3,36 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.3.1 — 2026-07-28
+
+First external review disposed (`review/20260726_gpt_5.6_terra_grill.md`,
+gpt 5.6). Doc-only — no kernel change; version bumped because a vendored
+file (`docs/profiles.md` → `workflow/profiles.md`) changed content.
+
+- **`review/` established** as the audit trail for external reviews: the
+  original text is committed verbatim, beside a disposition record
+  (`*.disposition.md`) that maps every recommendation to exactly one of
+  already-covered (with citation) / build-at-trigger (deferred row) /
+  declined (with written rationale). No recommendation may end up
+  unaccounted — the same rule the deferred ledger applies to mechanisms.
+- **`docs/deferred.md`**: the `spec_ref`/`coverage_delta` promotion row
+  expanded into a full **chain audit** (`docs.py --chain-audit`,
+  whole-graph break-link check spec → scenario → checker → coverage →
+  evidence; review rec 1). Five new rows from the review, each with a
+  concrete trigger: risk-graded card paths, `make env-check` preflight,
+  FL symptom-fingerprint fields, formal evidence record, tool-capability
+  profiles. The chain-audit trigger (first coverage-driven milestone
+  signoff) is imminent — pulp_axi_xbar_copilot's M2 functional-coverage
+  campaign (F-M2-08) is in flight.
+- **`docs/profiles.md`**: the files-not-conversation handoff rule now
+  carries its rationale, and the review's relaxation request ("ephemeral
+  collaboration, only conclusions filed") is declined on the record: the
+  cost (duplicate digging) is answered by dispatch Q1's grep-the-archive
+  rule, not by reopening the common-mode channel between DE and DV.
+- Out-of-repo items routed, not dropped: error-signature clustering and
+  transaction-timeline summaries belong to the xverif toolkit — the
+  framework's job is to bind them into dispatch cards once they exist.
+
 ## 0.3.0 — 2026-07-27
 
 Execution discipline promoted to canon and given priority over convenience.

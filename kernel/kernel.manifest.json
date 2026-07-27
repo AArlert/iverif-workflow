@@ -18,7 +18,7 @@
     "workflow/dispatch/assertion_failure.md": "ecf5b8b393b1c4f5472809f60ebfbf435d03d493d8a39183b5dbceb527381ef5",
     "workflow/dispatch/coverage_hole.md": "675a7a331fa060471e7dbac6af69977fddca52145c8df2ebea5b4151160e43fb",
     "workflow/dispatch/regression_failure.md": "614101c4481f8ab2c9b1640f81e8672256a8adffffa535e887cb87a625ac06bd",
-    "workflow/profiles.md": "738127207990c304dac8c817e39ccdcd6c355e554752d955a9d1078f59df2ca9",
+    "workflow/profiles.md": "2bf187e13e3e8e5147987faaeea92db0ecc94e4e7e69c22769f7a60c90d93070",
     "workflow/schema/evidence_record.md": "9dc192da57be2b214ccc0b5aef82584d292a2fad6e869e0e2ed510dc5c378573",
     "workflow/schema/failure_record.md": "708e2fffb98406fde36293a9512cf7bd49907328af85665829d0d2f9997751c5",
     "workflow/schema/testplan_entry.md": "56a8e3598acfb6214393af6aa55559e2ecced07289ac3c3101708cf961eb87bb",
@@ -27,5 +27,5 @@
     "workflow/taxonomy/failure_taxonomy.md": "c94e5340a19e2afcae0eeffb322a1f2d03d631a7799abefc3d763230fa2d5be6",
     "workflow/taxonomy/rca_template.md": "58ea28f44f6777197131983afbb4065ec43788df0c0a0aaa509681711ada0a88"
   },
-  "version": "0.3.0"
+  "version": "0.3.1"
 }
