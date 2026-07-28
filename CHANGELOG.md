@@ -3,6 +3,29 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.6.0 — 2026-07-28
+
+**Chain audit graduates from the deferred ledger** — its trigger (the
+first coverage-driven milestone signoff) fired today with pulp's
+signoff-M2.
+
+- `docs.py --chain-audit` / `make chain-audit`: break-link report over
+  spec ↔ testplan ↔ feature-matrix ↔ evidence. Spec section ids are
+  resolved from headings and inline `§N.M` tokens (a literal-token match
+  would have been 100% false positives — no adopter writes `SPEC-` in
+  the spec body); refs may anchor at a parent section (reported, not
+  failed). **Hard-fail is limited to dangling refs**; sourceless
+  scenarios, matrix orphans, parent-only anchors, uncited subsections,
+  and missing spec_ref headers are counted gaps — spec_ref adoption is
+  0/23 in the field, so enforcement waits (new deferred row).
+- First real run, on pulp's M2 docs: 0 dangling, 1 sourceless (the M0
+  smoke), 5 parent-anchored refs, and §5.2.6 — the clause REV-011 added
+  the same day — correctly flagged as cited by no scenario yet: the M3
+  gap the audit exists to surface.
+- Deferred: URG-parsing row re-scoped to "the first signoff that ships a
+  URG report" (M2 was coverage-driven via FCOV lines alone).
+  Tests: 72 → 74.
+
 ## 0.5.4 — 2026-07-28
 
 FB-19 (pulp): the verbatim guard-injection rule was undefined for the

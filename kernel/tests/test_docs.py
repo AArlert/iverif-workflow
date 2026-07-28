@@ -264,6 +264,38 @@ class TestTableStructure(DocsBase):
         self.assertIn("bugs.md", cp.stdout)
 
 
+class TestChainAudit(DocsBase):
+    def test_dangling_ref_fails(self):
+        self.doc("spec.md").write_text("# Spec\n\n## 1. intro\n",
+                                       encoding="utf-8")
+        (self.doc("testplan.md")).write_text(
+            "# Testplan\n\n" + _table(EN["tp_header"], [
+                "| M1-01 | M1 | checks SPEC-9.9 | base | 🔲 | - | - |"]),
+            encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--chain-audit")
+        self.assertEqual(cp.returncode, 1)
+        self.assertIn("SPEC-9.9", cp.stdout)
+        self.assertIn("FAIL", cp.stdout)
+
+    def test_clean_audit_reports_gaps_without_failing(self):
+        self.doc("spec.md").write_text(
+            "# Spec\n\n## 1. x\n### 1.1 y\nrule §1.2.3 inline\n",
+            encoding="utf-8")
+        (self.doc("testplan.md")).write_text(
+            "# Testplan\n\n" + _table(EN["tp_header"], [
+                "| M1-01 | M1 | SPEC-1.1 basic | base | 🔲 | - | - |",
+                "| M1-02 | M1 | SPEC-1.2.3.4 deep | base | 🔲 | - | - |",
+                "| M1-03 | M1 | no ref here | base | 🔲 | - | - |"]),
+            encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--chain-audit")
+        self.assertEqual(cp.returncode, 0, cp.stdout)
+        self.assertIn("dangling spec refs (cited, no such section): 0",
+                      cp.stdout)
+        self.assertIn("citing no spec clause: 1 — M1-03", cp.stdout)
+        self.assertIn("M1-02 SPEC-1.2.3.4→§1.2.3", cp.stdout)
+        self.assertIn("scenarios in no feature-matrix row: 2", cp.stdout)
+
+
 class TestGuards(DocsBase):
     def test_guards_query_matches_paths(self):
         # pulp BUG-0015判例 fuse: a guard that names its victim files must
