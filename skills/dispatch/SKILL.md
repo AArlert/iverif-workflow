@@ -57,3 +57,5 @@ card by type:
   script-computed (`make next`) — orch maintains no status cells.
 - Status cells (testplan/bugs) are backfilled by evidence.py; run
   `make docs-check` before closing the card.
+- Process cost visibly exceeded the card's work? Log it as framework
+  feedback — two recorded cases fire the deferred risk-grading row.

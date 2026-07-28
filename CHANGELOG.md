@@ -3,6 +3,17 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.4.6 — 2026-07-28
+
+Risk-grading trigger gets an observer (user audit of review rec 4). The
+deferred L0-L3 row's trigger ("overhead inversion recorded twice") had no
+one instructed to record it — overhead turns nothing red, so it would
+never fire; same failure shape as FB-10's unconsumed guards. One line in
+the dispatch collection check now prompts the recording. The mechanism
+itself stays deferred: the implemented per-card-type rules already
+approximate L0-L3 (no arch/rev forced on doc/build fixes), and zero of
+pulp's 15 FBs complain about process weight.
+
 ## 0.4.5 — 2026-07-28
 
 FB-15 (pulp): `fix_commit` implied "the fix happened in this repo" —

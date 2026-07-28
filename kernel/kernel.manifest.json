@@ -1,7 +1,7 @@
 {
   "files": {
     ".claude/skills/closeout/SKILL.md": "6ae415eb3b4b2dc8330a0783e4228311c7c53c0c1c7f023f92497b19729476d8",
-    ".claude/skills/dispatch/SKILL.md": "5df4720894dde430dd482c4cf595edc44b259b3d8b3d6c408990ad03cde2c39d",
+    ".claude/skills/dispatch/SKILL.md": "801f6f2f76f246d69e11b0afafe660d7f66cd49a2aa3e79cb69e1154fecf25dd",
     ".claude/skills/evidence/SKILL.md": "2bfb192baf895e1f8be45468294229f4ab867f5b18f9e06d7c98263fe746dca7",
     ".claude/skills/handover/SKILL.md": "5f67d490b4e2d1210f3b1c30c25b6f0d175dfcb2625f8b1ddfb79d499ed1c1f1",
     "scripts/bump.py": "cd2a2172f5b46ebbdbc2907d3f5098d647249148b3e4721ba470580ee94aa581",
@@ -28,5 +28,5 @@
     "workflow/taxonomy/failure_taxonomy.md": "c94e5340a19e2afcae0eeffb322a1f2d03d631a7799abefc3d763230fa2d5be6",
     "workflow/taxonomy/rca_template.md": "58ea28f44f6777197131983afbb4065ec43788df0c0a0aaa509681711ada0a88"
   },
-  "version": "0.4.5"
+  "version": "0.4.6"
 }
