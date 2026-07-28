@@ -11,7 +11,7 @@
     "scripts/iverif_config.py": "aee3aba997f18fdb3c60416a1537916aeb5ae3e5dec455f1d3216d64c63a1452",
     "scripts/make/core.mk": "fb044094fda659c34086005ef6ee2f778802d8c7d79ea06abf56aa0ec3c4c3b2",
     "scripts/make/evidence.mk": "b84eadfacaa119dede802e871316070eeea4777efebb3f3aa42b12aa86e81752",
-    "scripts/make/vcs-2018.mk": "aa5a57420efef7fc16a0710e83581d3850446657f259d851e12f0fa3a4ef7652",
+    "scripts/make/vcs-2018.mk": "3c6578e7185b264b7250fdb825d16315145fc12a21b3471f8d7fbbf4f7a10337",
     "scripts/regress.py": "cd9b1ebfca6a848e85358d1e7dc6cdd27648f2972fd5235279c1d6cd4a187673",
     "scripts/svacheck.py": "d4ba680dfd202c750e23e0030e3d803d56e09f5b918f2358c644ba1a6298a17c",
     "workflow/discipline.md": "d4c03eec1c6c6a9491efa5706327070fd7d7783770910dbddb18e4338e14fd6c",
@@ -28,5 +28,5 @@
     "workflow/taxonomy/failure_taxonomy.md": "c94e5340a19e2afcae0eeffb322a1f2d03d631a7799abefc3d763230fa2d5be6",
     "workflow/taxonomy/rca_template.md": "58ea28f44f6777197131983afbb4065ec43788df0c0a0aaa509681711ada0a88"
   },
-  "version": "0.5.1"
+  "version": "0.5.2"
 }

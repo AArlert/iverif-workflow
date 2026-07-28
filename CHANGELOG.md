@@ -3,6 +3,29 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.5.2 — 2026-07-28
+
+pulp's FB-11 adversarial prototype refuted the 0.4.1-era candidate stamp
+shape — adopted in full.
+
+- **`make/vcs-2018.mk` ld-colon fix** (pulp BUG-0030, snapshot bug):
+  `:$(LD_LIBRARY_PATH)` with the parent var empty left a trailing empty
+  element and NPI-based tools (xdebug) refuse to initialize on it — any
+  project calling them from a make environment inherited the trap. Now a
+  conditional append; header workaround list documents it; make-fragment
+  fuse test added (skips without `make`).
+- **Gate self-attestation doctrine rewritten in the deferred ledger** from
+  the prototype's two counterexamples (valid stamp ⇒ tool never ran on a
+  file dropped from the flist; rerun + marker present ⇒ changed file
+  parsed 0 times): the gate's product is **proof, not acceleration** —
+  default is unconditional rerun + per-object execution proof; a stamp is
+  admitted only when recheck is unaffordably expensive, and then property
+  ④ (proof bound to an object enumeration independent of the tool input)
+  is mandatory. Markers must be validated from real tool output — their
+  own template example ("elaboration done") occurred 0 times in 15954
+  lines. Canon carrier decided at the pattern's second adopter; pulp's
+  sim/Makefile is the reference implementation. Tests: 70 → 71.
+
 ## 0.5.1 — 2026-07-28
 
 Guard-injection presentation rule, from pulp's second field use (8 hits:
