@@ -75,11 +75,8 @@ Failures: never registered as evidence. Triage with
 ## §4 Environment
 
 - Simulation runs in the VM (Ubuntu 22.04, VCS/Verdi O-2018). Known tool
-  workarounds: `scripts/make/vcs-2018.mk` header. The xverif toolkit
-  (`xdebug`/`xcov`/`xsva`/`xloc`) is NOT on PATH: entry
-  `$XVERIF_ROOT/tools/` (default `/home/open_tools/xverif`, exported by
-  `scripts/make/vcs-2018.mk`); export VERDI_HOME first; probe with
-  `test -x $XVERIF_ROOT/tools/xcov`, never `command -v`.
+  workarounds AND the xverif toolkit entry/probing rules: header of
+  `scripts/make/vcs-2018.mk` — the single authority; do not restate paths.
 - This repo is developed on the host and cloned into the VM; line endings
   are pinned by `.gitattributes` — do not fight it.
 

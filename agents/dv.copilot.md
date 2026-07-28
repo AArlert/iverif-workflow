@@ -59,12 +59,9 @@ named in your card first.
   (`workflow/schema/evidence_record.md` row 6) and coverage evidence stays
   self-sufficient at signoff.
 - For waveform chasing, log location, and coverage triage prefer the xverif
-  toolkit on the VM. It is NOT on PATH: entry
-  `$XVERIF_ROOT/tools/{xdebug,xloc,xcov}` (default
-  `/home/open_tools/xverif`, exported by `scripts/make/vcs-2018.mk`);
-  export VERDI_HOME first for xdebug/xcov; probe with
-  `test -x $XVERIF_ROOT/tools/xdebug`, never `command -v`. Failure triage
-  follows `workflow/dispatch/*.md`.
+  toolkit (NOT on PATH — entry paths and probing rules: header of
+  `scripts/make/vcs-2018.mk`). Failure triage follows
+  `workflow/dispatch/*.md`.
 
 ## Exclusion zone
 

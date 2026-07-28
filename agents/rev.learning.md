@@ -63,10 +63,8 @@ snapshot — they are current and offline.
   citation) → guidance (principles + direction, no implementation code) →
   overall verdict (pass / conditional pass with conditions / rejected with
   gaps).
-- When examining evidence/coverage/waves, the xverif toolkit is available
-  on the VM (`xcov`, `xdebug`, `xsva`, `xloc`). It is NOT on PATH: entry
-  `$XVERIF_ROOT/tools/` (default `/home/open_tools/xverif`); export
-  VERDI_HOME first; probe with `test -x $XVERIF_ROOT/tools/xcov`, never
-  `command -v`.
+- When examining evidence/coverage/waves, use the xverif toolkit (NOT on
+  PATH — entry paths and probing rules: header of
+  `scripts/make/vcs-2018.mk`).
 - Token discipline: grep to locate, then read precisely; never bulk-read
   vendor RTL or archives.

@@ -115,6 +115,13 @@ snapshots, and kernel self-tests are the structural answer.
 
 ## Design principles
 
+**Effective · lean · clear · token-cheap** (有效·精炼·清晰·省token) — for
+this repo and for every pinned snapshot it ships. Corollaries:
+
+- **Write it as short as it can be.** Snapshot text is contract: the rule
+  and its check, one line of why at most. The story lives in the CHANGELOG
+  or `docs/design-notes.md`, never in operative docs. Canon CI holds a byte
+  budget per pinned doc.
 - **Thick storage, thin read surface.** Full history is archived; sessions
   read only rolling summaries (`status.jsonl` head, last `log.md` block,
   testplan table).
