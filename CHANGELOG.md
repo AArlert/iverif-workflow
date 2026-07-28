@@ -3,6 +3,19 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.4.4 — 2026-07-28
+
+Article-origin vocabulary purged from operative docs (user audit). The
+bootstrap article's five-role cast (planner/coder/runner/rca/rev) still
+leaked into instructions: dispatch-card copilot columns commanded a "rca
+agent"/"runner"/"planner" — roles that do not exist in the implemented
+suite; a downstream orch following them would dispatch cards to nobody.
+Rewritten to implemented seams (orch / dv / `make run`). deferred.md no
+longer cites the article as rule authority. Kept by adjudication: `rca` as
+FL section/template name (industry vocabulary, downstream archives carry
+it). The adjudication and the going-forward rule live in
+`docs/design-notes.md`.
+
 ## 0.4.3 — 2026-07-28
 
 FB-13 + FB-14 (pulp). FB-14 is the third sample of the "didn't run / data

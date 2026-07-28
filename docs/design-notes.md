@@ -37,6 +37,20 @@ set:
 | rca | dv + `dispatch/` tables; dedicated rca agent deferred (deferred.md) |
 | rev | rev — the only role with signoff authority |
 
+## Article-origin vocabulary purged from operative docs (0.4.4)
+
+The repo bootstrapped from an external evidence-chain article whose
+five-role cast (planner / coder / runner / rca / rev) predates the
+implemented seams (orch + arch/de/dv/rev + the mechanical layer). 0.4.4
+removed the last operative references: dispatch-card copilot columns still
+commanded a "rca agent"/"runner"/"planner", roles no downstream repo has;
+deferred.md cited the article ("founding design doc §10") as rule
+authority. Adjudicated **kept**: `rca` as the FL section / template name —
+root-cause analysis is industry vocabulary, not the article's coinage, and
+renaming would churn every downstream FL archive for zero clarity gain.
+Rule going forward: operative docs use only implemented concepts; borrowed
+genealogy lives here.
+
 ## Profiles: split into per-profile contracts (0.4.0)
 
 `docs/profiles.md` (both contracts + comparison in one pinned file) was

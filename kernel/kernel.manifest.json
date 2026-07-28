@@ -15,10 +15,10 @@
     "scripts/regress.py": "cd9b1ebfca6a848e85358d1e7dc6cdd27648f2972fd5235279c1d6cd4a187673",
     "scripts/svacheck.py": "d4ba680dfd202c750e23e0030e3d803d56e09f5b918f2358c644ba1a6298a17c",
     "workflow/discipline.md": "d4c03eec1c6c6a9491efa5706327070fd7d7783770910dbddb18e4338e14fd6c",
-    "workflow/dispatch/assertion_failure.md": "ecf5b8b393b1c4f5472809f60ebfbf435d03d493d8a39183b5dbceb527381ef5",
-    "workflow/dispatch/coverage_hole.md": "ebbf29e49ac3908da7b18b1d60bb804714831976c473c05f9bca512921351fdf",
-    "workflow/dispatch/regression_failure.md": "614101c4481f8ab2c9b1640f81e8672256a8adffffa535e887cb87a625ac06bd",
-    "workflow/profile.copilot.md": "c8faebff9110159a81f90be506e478801b306ae969ec17df1249d3ca0df1443d",
+    "workflow/dispatch/assertion_failure.md": "44f4a0e3049afd4e86b4ce0329cf5477221ed8bb8b5c3cf203d3529654926401",
+    "workflow/dispatch/coverage_hole.md": "efc74b3eb54c7a70c8c1d6630b950208d2838f431c93f13b05f651e2858ddb54",
+    "workflow/dispatch/regression_failure.md": "73e15d803b6454ae64a1cc72e7dc3a864903492da3f2277251d2524a64382900",
+    "workflow/profile.copilot.md": "dcc48c2db22c7c19ec50b5aaa3669f47a39053b610d83430d8404f1405d3fa98",
     "workflow/profile.learning.md": "28de55f7bac27fb477aa8079bcc2231ee001a33cb9e7fbed610be04255fdcfa5",
     "workflow/schema/evidence_record.md": "ff583ae7e210c74365c745544c811ee0d55ac488e16c135a2689bfaa7d2a5c71",
     "workflow/schema/failure_record.md": "2938f78e6c39842c881c8c7a431265e9f58727d4455d52f500549631bcae3b8f",
@@ -28,5 +28,5 @@
     "workflow/taxonomy/failure_taxonomy.md": "c94e5340a19e2afcae0eeffb322a1f2d03d631a7799abefc3d763230fa2d5be6",
     "workflow/taxonomy/rca_template.md": "58ea28f44f6777197131983afbb4065ec43788df0c0a0aaa509681711ada0a88"
   },
-  "version": "0.4.3"
+  "version": "0.4.4"
 }

@@ -1,7 +1,6 @@
 # Deferred mechanisms
 
-Rule (from the founding design doc, §10): **no infrastructure ahead of
-pain.** Every mechanism below is deliberately *not* built yet. Each has a
+Rule: **no infrastructure ahead of pain.** Every mechanism below is deliberately *not* built yet. Each has a
 concrete trigger — the first real occurrence of its pain point in a project
 repo. When a trigger fires, build the mechanism **here** (never in the
 project repo), add a kernel test, bump the version, and let projects pull.
