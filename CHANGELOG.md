@@ -3,6 +3,41 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.7.1 — 2026-07-29
+
+Two deferred rows graduate **by user ruling**, ahead of their triggers,
+to be stress-walked by the adopters. The ruling refutes 0.4.6's observer
+design: *nobody complaining about process weight does not mean the
+process is light — every subagent sees only its own card, chain weight
+is visible only to orch, and orch does not hurt.* Zero recordings ≠
+zero weight. Generating axioms: consumption (the frontier and the
+overhead both get real observers), pain-gating (chain weight matched to
+risk), recording (grade and mismatch land in records, not impressions).
+
+- **Spec-gap explorer** (`docs.py --explore` / `make explore`): planning
+  view of the chain-audit graph — uncited spec subsections listed with
+  their heading titles as candidate testplan rows, sourceless scenarios
+  flagged for anchoring. `--next` gains a planning-time nag (both
+  profiles, `explore` phrase key) that fires only while the current
+  milestone has **zero** registered rows and falls silent once planning
+  exists — no permanent nag (the FB-19 skimming shape). New copilot card
+  type: **arch spec-gap sweep** (must include the explore list verbatim;
+  must not include orch's scenario ideas); arch converts gaps into
+  proposed rows or written per-section declines — a decline is a
+  narrowing, rev gates either way. Chain-audit unchanged (shared
+  `chain_gaps()` computation).
+- **L0–L3 risk grades** (dispatch manual): L0 docs/build · L1
+  TB/sequence/coverage · L2 RTL/SVA/scoreboard · L3
+  spec/waiver/signoff. The grade table absorbs the old model-tier list;
+  grades tune the *chain* only — taxonomy registration and evidence
+  gates stay unconditional at every grade; in doubt, grade up. Every
+  card states its grade; the collection check records grade-vs-reality
+  mismatches **per card** (the structurally sighted observer the 0.4.6
+  design lacked). The adopter walk-through is expected to generate
+  exactly this mismatch data — that is the point of shipping early.
+- Budgets: dispatch SKILL cap 4300 → 4900 (reviewed: grade table +
+  card row + observer are operative contract). Tests: 79 → 82.
+
 ## 0.7.0 — 2026-07-29
 
 **Structural refactor: the layout is the mental model.** Origin: the

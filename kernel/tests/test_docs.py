@@ -425,5 +425,68 @@ class TestProfiles(DocsBase):
         self.assertIn("design-prompt", cp.stdout)
 
 
+class TestExplore(DocsBase):
+    """0.7.1 spec-gap explorer: the frontier is listed on demand and nagged
+    at planning time — and ONLY at planning time (a permanent nag would be
+    skimmed, the FB-19 shape)."""
+
+    def spec_with_sections(self):
+        spec = ("# Spec\n\n## 1.1 handshake\nSPEC-1.1 the DUT shall "
+                "smoke.\n\n## 1.2 backpressure\nstall behavior.\n\n"
+                "## Change record\n\n"
+                + _table("| date | section | change |",
+                         ["| 2026-07-19 | all | initial |"]))
+        self.doc("spec.md").write_text(spec, encoding="utf-8")
+
+    def test_explore_lists_only_uncited_sections(self):
+        self.spec_with_sections()
+        # fixture testplan row M1-01 cites SPEC-1.1 via its description
+        tp = self.doc("testplan.md")
+        tp.write_text(tp.read_text(encoding="utf-8").replace(
+            "| M1-01 | M1 | smoke |", "| M1-01 | M1 | smoke SPEC-1.1 |"),
+            encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--explore")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        self.assertIn("§1.2", cp.stdout)
+        self.assertIn("backpressure", cp.stdout)  # heading title carried
+        self.assertNotIn("§1.1", cp.stdout)
+        self.assertIn("narrowing must be declared", cp.stdout)
+
+    def test_next_nags_explore_only_while_milestone_unplanned(self):
+        self.spec_with_sections()
+        # move to M2: no M2 rows registered yet → planning-time nag
+        (self.tmp / "version.json").write_text(
+            '{"version": "0.2.0", "milestone": "M2"}\n', encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--next")
+        self.assertIn("make explore", cp.stdout)
+        # first M2 row registered → the nag must fall silent
+        tp = self.doc("testplan.md")
+        tp.write_text(tp.read_text(encoding="utf-8")
+                      + "| M2-01 | M2 | bp SPEC-1.2 | baseline | 🔲 | - "
+                        "| - |\n", encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--next")
+        self.assertNotIn("make explore", cp.stdout)
+
+
+class TestRiskGradeContract(unittest.TestCase):
+    """0.7.1 L0–L3 fuse: the grade table, the per-card grade line, and the
+    per-card mismatch observer must stay in the dispatch manual — the
+    observer exists because subagents cannot see chain weight (user ruling
+    2026-07-29)."""
+
+    def test_dispatch_skill_carries_risk_grades(self):
+        fw = Path(__file__).resolve().parents[2]
+        text = (fw / "harness" / "skills" / "dispatch" / "SKILL.md"
+                ).read_text(encoding="utf-8")
+        for token in ("L0", "L1", "L2", "L3", "grade up",
+                      "unconditional at every grade",
+                      "and its grade", "Grade vs reality, every card"):
+            self.assertIn(token, text, token)
+        arch = (fw / "harness" / "agents" / "arch.copilot.md"
+                ).read_text(encoding="utf-8")
+        self.assertIn("Spec-gap sweep", arch)
+        self.assertIn("make explore", arch)
+
+
 if __name__ == "__main__":
     unittest.main()

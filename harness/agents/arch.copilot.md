@@ -33,6 +33,12 @@ derivation belongs to DV.
   re-pinned by orch — you never edit the spec body yourself.**
 - **Interface definitions**: module port tables, inter-module timing
   contracts (cite the spec, or propose into it — see the leak rule below).
+- **Spec-gap sweep** (explore cards): turn the card's `make explore` list
+  into proposed testplan rows + feature-matrix links (id / milestone /
+  one-sentence scenario / section cite) — or a written decline per
+  section: not every section needs a scenario, but declining one is a
+  narrowing and goes to rev like any other. Proposals pass the rev gate
+  before registration.
 - **Project/module bring-up**: draft the plan (milestone definitions, module
   split, acceptance anchors).
 

@@ -35,7 +35,10 @@ BUDGETS = {  # bytes, ~12% headroom over the 0.4.0 diet
     "harness/skills/closeout/SKILL.md": 2050,
     # Raised 0.5.4 (reviewed): the signoff-card injection exception is
     # new operative contract from field data (FB-19), not prose growth.
-    "harness/skills/dispatch/SKILL.md": 4300,
+    # Raised 0.7.1 (reviewed): the L0-L3 grade table (absorbing the old
+    # tier list), the spec-gap card row, and the per-card mismatch
+    # observer are new operative contract (user ruling 2026-07-29).
+    "harness/skills/dispatch/SKILL.md": 4900,
     "harness/skills/evidence/SKILL.md": 2000,
     "harness/skills/handover/SKILL.md": 1300,
     "loop/fail/failure_taxonomy.md": 4300,
