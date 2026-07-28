@@ -15,7 +15,7 @@ make docs-check && make handover        # both pass on the seed
 ```
 
 `--init` refuses a non-empty target (deliberate: it never wants to guess
-what to keep vs. overwrite — see `docs/deferred.md` on not building
+what to keep vs. overwrite — see `governance/deferred.md` on not building
 infrastructure ahead of pain). If `<dir>` already has a few bootstrap files
 in it (e.g. a repo host pre-seeded `LICENSE`/`README`/
 `.claude/settings.local.json` before you ran `--init`), move them aside,
@@ -29,7 +29,7 @@ found". Restart the session (or wait a few minutes for the type to
 register) before dispatching a card; don't burn time debugging the card
 itself.
 
-Then fill in the project half: vendor the DUT (`templates/VENDOR.md` flow),
+Then fill in the project half: vendor the DUT (`harness/templates/VENDOR.md` flow),
 write `sim/flist/*.f` + the sim rules (patterns at the tail of
 `scripts/make/vcs-2018.mk`), distill `doc/spec.md` v0 and get it
 rev-reviewed before pinning, and complete the TODO section of `CLAUDE.md`.
@@ -68,8 +68,8 @@ First VM session: `make smoke`, then the first real
 3. Root Makefile: replace the doc-target block with
    `include scripts/make/core.mk` + `include scripts/make/evidence.mk`;
    keep the sim forwarding block.
-4. Restore CI from `templates/ci.yml`; `git rm --cached .Makefile.swp` and
-   append the junk patterns from `templates/gitignore`.
+4. Restore CI from `harness/templates/ci.yml`; `git rm --cached .Makefile.swp` and
+   append the junk patterns from `harness/templates/gitignore`.
 5. `make docs-check && make fw-check` green → commit.
 
 ## 3. Existing copilot repo (ppa-lite-copilot, on its next dev session)

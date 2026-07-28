@@ -1,6 +1,7 @@
-<!-- Rendered by fwsync from iverif-workflow/templates/CLAUDE.project.copilot.md
-     (framework {{FRAMEWORK_VERSION}}). Project-specific sections are marked
-     TODO; the framework-owned sections should not be edited here. -->
+<!-- Canonical: iverif-workflow/harness/templates/CLAUDE.project.copilot.md —
+     rendered at init (framework {{FRAMEWORK_VERSION}}); project sections are
+     marked TODO, framework-owned sections are not edited here. Axioms:
+     self-application. Consumer: every session. -->
 
 # {{PROJECT_NAME}} — CLAUDE.md
 
@@ -8,7 +9,9 @@ Profile: **{{PROFILE}}** (see `workflow/profile.md`). The workflow rules
 live in the `workflow/` snapshot — read them there (offline-safe); do not
 restate or fork them here.
 
-> **Read first, every session: `workflow/discipline.md`** — execution
+> **Read first, every session: `workflow/constitution.md`** — the whole
+> framework on one page (axioms, the loop, the mechanism index) —
+> then `workflow/discipline.md`: execution
 > discipline (think before coding · simplicity first · surgical changes ·
 > goal-driven execution · small closed loops). It binds orch and every
 > dispatched role, and it outranks convenience: prefer it over the faster
@@ -43,7 +46,7 @@ state from chat history):
 - `doc/log.md` — capped block count; each block answers: done / not done /
   next / how verified.
 - `doc/testplan.md` — the scenario truth table (contract:
-  `workflow/schema/testplan_entry.md`).
+  `workflow/testplan_entry.md`).
 Archives live in `doc/archive/` and are not read by default.
 
 ## §2 The work loop
@@ -60,8 +63,8 @@ make docs-check         # before closing any card
 ```
 
 Failures: never registered as evidence. Triage with
-`workflow/dispatch/*.md`, file in `doc/bugs.md`
-(contract: `workflow/schema/failure_record.md`).
+`workflow/fail/*.md`, file in `doc/bugs.md`
+(contract: `workflow/fail/failure_record.md`).
 
 ## §3 Gate order (dispatch preconditions)
 

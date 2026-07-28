@@ -130,7 +130,7 @@ class TestFourQuadrants(EvidenceBase):
 
     def test_fcov_summary_lines_are_canon(self):
         # FB-9 (pulp_axi_xbar) + user ruling 2026-07-28: `[FCOV_SUMMARY]`
-        # per-covergroup lines (schema/evidence_record.md row 6) are the
+        # per-covergroup lines (loop/evidence_record.md row 6) are the
         # canon convention — captured into `## Key check lines` with ZERO
         # project config, so coverage numbers live in the evidence itself
         # and signoff never re-opens source logs. (0.3.2 briefly pinned the

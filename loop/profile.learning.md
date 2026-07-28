@@ -1,6 +1,8 @@
 # Profile contract: learning
 
-<!-- Canonical: iverif-workflow/docs/profile.learning.md — pinned snapshot. -->
+<!-- Canonical: iverif-workflow/loop/profile.learning.md — pinned snapshot.
+     Axioms: independence. Consumer: the human at session start; fwsync
+     selects it as workflow/profile.md. -->
 
 The human writes all RTL/TB code and runs `make evidence`. The only agent is
 `rev`: reviews evidence against the six questions, mentors with principles —
@@ -12,7 +14,7 @@ review of…").
 
 - The four core invariants: no sim log no ✅ · replay command on line 1 ·
   closer ≠ fixer · spec pinned.
-- Record schemas (`workflow/schema/`), failure taxonomy, dispatch tables,
+- Record schemas (`workflow/` + `workflow/fail/`), failure taxonomy, dispatch tables,
   six questions, signoff rubric.
 - Rolling memory: `doc/status.jsonl` + `doc/log.md` + `doc/testplan.md`,
   archives under `doc/archive/`.

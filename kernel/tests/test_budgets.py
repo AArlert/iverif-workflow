@@ -13,38 +13,40 @@ import fwsync  # noqa: E402
 
 BUDGETS = {  # bytes, ~12% headroom over the 0.4.0 diet
     # 0.7.0 re-key (structural refactor): canon paths follow the new
-    # layout; caps unchanged by the move itself.
+    # layout. All rows +200 at 0.7.0 (reviewed): the unified provenance
+    # header (Canonical/Axioms/Consumer, machine-checked by
+    # test_constitution) is mandatory contract, not prose growth.
     "CONSTITUTION.md": 4800,  # the one-page mental model — hard cap
-    "loop/fail/assertion_failure.md": 2450,
-    "loop/fail/coverage_hole.md": 1950,
-    "loop/fail/regression_failure.md": 1650,
-    "loop/discipline.md": 5400,
-    "loop/profile.copilot.md": 2200,
-    "loop/profile.learning.md": 2200,
+    "loop/fail/assertion_failure.md": 2650,
+    "loop/fail/coverage_hole.md": 2150,
+    "loop/fail/regression_failure.md": 1850,
+    "loop/discipline.md": 5600,
+    "loop/profile.copilot.md": 2400,
+    "loop/profile.learning.md": 2400,
     # Raised 0.5.0 (reviewed): CMD-form records + ACCEPTED@M<n> are new
     # operative contracts, not prose growth.
-    "loop/evidence_record.md": 3400,
-    "loop/fail/failure_record.md": 4400,
-    "loop/testplan_entry.md": 2100,
+    "loop/evidence_record.md": 3600,
+    "loop/fail/failure_record.md": 4600,
+    "loop/testplan_entry.md": 2300,
     # Raised 0.5.3 (#7, FB-18) and 0.6.1 (#8, FB-21): new operative
     # contract, not prose growth.
-    "loop/review/rubric.md": 2950,
-    "loop/review/six_questions.md": 2600,
-    "harness/skills/closeout/SKILL.md": 1850,
+    "loop/review/rubric.md": 3150,
+    "loop/review/six_questions.md": 2800,
+    "harness/skills/closeout/SKILL.md": 2050,
     # Raised 0.5.4 (reviewed): the signoff-card injection exception is
     # new operative contract from field data (FB-19), not prose growth.
-    "harness/skills/dispatch/SKILL.md": 4100,
-    "harness/skills/evidence/SKILL.md": 1800,
-    "harness/skills/handover/SKILL.md": 1100,
-    "loop/fail/failure_taxonomy.md": 4100,
-    "loop/fail/rca_template.md": 1800,
-    "harness/agents/arch.copilot.md": 4100,
-    "harness/agents/de.copilot.md": 4150,
-    "harness/agents/dv.copilot.md": 5050,
-    "harness/agents/rev.copilot.md": 4300,
-    "harness/agents/rev.learning.md": 4300,
-    "harness/templates/CLAUDE.project.copilot.md": 4950,
-    "harness/templates/CLAUDE.project.learning.md": 4800,
+    "harness/skills/dispatch/SKILL.md": 4300,
+    "harness/skills/evidence/SKILL.md": 2000,
+    "harness/skills/handover/SKILL.md": 1300,
+    "loop/fail/failure_taxonomy.md": 4300,
+    "loop/fail/rca_template.md": 2000,
+    "harness/agents/arch.copilot.md": 4300,
+    "harness/agents/de.copilot.md": 4350,
+    "harness/agents/dv.copilot.md": 5250,
+    "harness/agents/rev.copilot.md": 4500,
+    "harness/agents/rev.learning.md": 4500,
+    "harness/templates/CLAUDE.project.copilot.md": 5150,
+    "harness/templates/CLAUDE.project.learning.md": 5000,
 }
 
 
