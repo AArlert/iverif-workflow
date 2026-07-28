@@ -3,6 +3,31 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.3.3 — 2026-07-28
+
+User ruling on 0.3.2's design: **zero-config correctness beats config
+hooks** — an adopting repo must be right out of the box, not after
+discovering which `iverif.json` keys to patch. The two hooks stay, demoted
+to escape hatches; the common cases move into canon.
+
+- **`[FCOV_SUMMARY]` promoted to canon convention** (supersedes 0.3.2's
+  wait-for-a-second-project stance): the tb prints one line per
+  covergroup — `[FCOV_SUMMARY] <cg> samples=<n> inst_cov=<pct>` — and
+  canon `KEY_LINE_RE` captures it with no project config.
+  `schema/evidence_record.md` row 6 is the contract;
+  `agents/dv.copilot.md` instructs the convention at authoring time.
+  pulp_axi_xbar_copilot already prints exactly this tag — zero change on
+  pull. The 0.3.2 fuse that pinned hook-only capture is deliberately
+  flipped; the escape-hatch fuse now uses a neutral `[MYCOV]` tag.
+- **`--next` deliverable-owner wording derives from delivery config**
+  (FB-8 root fix): tb/-rooted `delivery.glob` → DV-owned deliverables,
+  else DE; explicit `delivery.owner` ("de"/"dv", validated) overrides.
+  The copilot `undelivered`/`prompt_missing` phrases are now
+  role-parametric — a vendored-DUT repo gets "dispatch DV card" with
+  zero config, no `next_phrases_override` needed.
+- Tests: 50 → 52. `config/iverif_config.md` updated (both hooks
+  re-labelled escape hatches, `delivery.owner` documented).
+
 ## 0.3.2 — 2026-07-28
 
 Second-round feedback from `pulp_axi_xbar_copilot` (FB-8, FB-9 in its

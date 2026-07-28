@@ -113,6 +113,20 @@ class Config:
         self.next_phrases_override = raw.get("next_phrases_override", {})
         self.key_line_extra = raw.get("key_line_extra", [])
         self.delivery_glob = raw.get("delivery", {}).get("glob", "rtl/{name}.sv")
+        # Who owns feature-matrix deliverables — drives `--next` card wording
+        # in the copilot profile. Explicit `delivery.owner` ("de"|"dv") wins;
+        # the default derives from the glob the project already declares:
+        # tb/-rooted deliverables are DV-owned tb code (vendored-DUT repos),
+        # anything else is DE-owned RTL. Zero-config correctness for both
+        # ecosystem shapes (pulp_axi_xbar FB-8; user ruling 2026-07-28:
+        # turnkey beats per-project wording patches).
+        owner = raw.get("delivery", {}).get("owner")
+        if owner is None:
+            owner = "dv" if self.delivery_glob.startswith("tb/") else "de"
+        if owner not in ("de", "dv"):
+            sys.exit("iverif.json delivery.owner must be 'de' or 'dv', "
+                     "got %r" % owner)
+        self.delivery_owner = owner
         self.sim_log = raw.get("sim_log", "sim/out/{test}_{seed}.log")
         self.signoff_glob = raw.get("signoff_glob", "signoff-M{m}*.md")
         self.fl_enforce = raw.get("fl_schema_enforce", True)

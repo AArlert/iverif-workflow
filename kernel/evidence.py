@@ -36,12 +36,17 @@ PLAIN_MARK = "V C S   S i m u l a t i o n"
 # upstream `tb_axi_xbar`'s "Simulation has ended!" / "Tests Failed: 0" —
 # these previously matched none of the UVM-shaped patterns above, leaving
 # `## Key check lines` empty despite a sound verdict (pulp_axi_xbar FB-6).
-# Canon patterns stay generic on purpose: project-invented summary tags
-# (e.g. a tb's own [FCOV_SUMMARY] coverage lines — pulp_axi_xbar FB-9) ride
-# the `key_line_extra` regex list in iverif.json instead, so evidence stays
-# self-sufficient without projects editing scripts/.
+# `[FCOV_SUMMARY]` is the canon convention for functional-coverage summary
+# lines (schema/evidence_record.md: the tb prints one line per covergroup,
+# `[FCOV_SUMMARY] <cg> samples=<n> inst_cov=<pct>`) so coverage numbers land
+# in the excerpt and signoff never re-opens source logs. Promoted from
+# pulp_axi_xbar's project tag (FB-9) by user ruling 2026-07-28: adopting
+# projects must be correct with zero config. Genuinely project-specific
+# extra tags still ride the `key_line_extra` regex list in iverif.json —
+# never edits to this file.
 KEY_LINE_RE = re.compile(r"(?i)\b(pass|match|compare ok|check ok"
-                         r"|running test|tests failed|ended|mismatch)\b")
+                         r"|running test|tests failed|ended|mismatch)\b"
+                         r"|\[FCOV_SUMMARY\]")
 KEY_LINES_MAX = 30
 
 

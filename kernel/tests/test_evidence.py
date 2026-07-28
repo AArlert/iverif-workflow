@@ -80,28 +80,44 @@ class TestFourQuadrants(EvidenceBase):
         self.assertIn("Tests Failed:", key_lines)        # KEY_LINE_RE hit
         self.assertIn("Simulation has ended!", key_lines)
 
-    def test_key_line_extra_captures_project_labels(self):
-        # FB-9 (pulp_axi_xbar): functional-coverage summary lines carry a
-        # project-invented tag ([FCOV_SUMMARY]) that canon KEY_LINE_RE
-        # deliberately does not know — without a hook the coverage numbers
-        # stay out of the excerpt and signoff must re-open source logs.
-        # Three legs: the hook pulls them in; canon stays generic (a no-hook
-        # run must NOT capture them); a bad regex fails loudly.
+    def test_fcov_summary_lines_are_canon(self):
+        # FB-9 (pulp_axi_xbar) + user ruling 2026-07-28: `[FCOV_SUMMARY]`
+        # per-covergroup lines (schema/evidence_record.md row 6) are the
+        # canon convention — captured into `## Key check lines` with ZERO
+        # project config, so coverage numbers live in the evidence itself
+        # and signoff never re-opens source logs. (0.3.2 briefly pinned the
+        # opposite — hook-only capture — before the ruling that adopting
+        # projects must be correct out of the box.)
         fcov = ("UVM_INFO fcov.sv(9) @ 345000: [FCOV_SUMMARY] cg_tx_limit "
                 "samples=60 inst_cov=80.00\n")
-        log = fcov + UVM_PASS_LOG
+        self.write_log(fcov + UVM_PASS_LOG)
+        cp = self.evidence("--scen", "M1-01", "--test", "fixture_test",
+                           "--seed", "1")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        ev = (self.tmp / "doc" / "evidence" / "v0.1.0"
+              / "M1-01.log").read_text(encoding="utf-8")
+        _, _, keys = ev.partition("## Key check lines")
+        self.assertIn("[FCOV_SUMMARY] cg_tx_limit samples=60", keys)
+
+    def test_key_line_extra_captures_project_labels(self):
+        # The escape hatch for tags beyond the canon convention: a
+        # project-invented [MYCOV] tag stays out of the excerpt by default
+        # (canon must not silently widen), rides in via the iverif.json
+        # `key_line_extra` hook, and a bad regex fails loudly.
+        mycov = ("UVM_INFO cov.sv(3) @ 345000: [MYCOV] region_hits "
+                 "count=42\n")
+        log = mycov + UVM_PASS_LOG
         self.write_log(log)
         cp = self.evidence("--scen", "M1-01", "--test", "fixture_test",
                            "--seed", "1")
         self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
         ev = (self.tmp / "doc" / "evidence" / "v0.1.0"
               / "M1-01.log").read_text(encoding="utf-8")
-        self.assertNotIn("FCOV_SUMMARY", ev)     # canon stays generic
+        self.assertNotIn("MYCOV", ev)            # canon stays canon
 
-        hooked = Path(self.tmp.parent) / (self.tmp.name + "_fcov")
+        hooked = Path(self.tmp.parent) / (self.tmp.name + "_mycov")
         self.addCleanup(shutil.rmtree, hooked, True)
-        make_project(hooked,
-                     overrides={"key_line_extra": [r"\[FCOV_SUMMARY\]"]})
+        make_project(hooked, overrides={"key_line_extra": [r"\[MYCOV\]"]})
         out = hooked / "sim" / "out"
         out.mkdir(parents=True)
         (out / "fixture_test_1.log").write_text(log, encoding="utf-8")
@@ -111,7 +127,7 @@ class TestFourQuadrants(EvidenceBase):
         ev = (hooked / "doc" / "evidence" / "v0.1.0"
               / "M1-01.log").read_text(encoding="utf-8")
         _, _, keys = ev.partition("## Key check lines")
-        self.assertIn("[FCOV_SUMMARY] cg_tx_limit samples=60", keys)
+        self.assertIn("[MYCOV] region_hits count=42", keys)
 
         badp = Path(self.tmp.parent) / (self.tmp.name + "_badre")
         self.addCleanup(shutil.rmtree, badp, True)

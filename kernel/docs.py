@@ -546,12 +546,13 @@ def report(errors, warns):
 
 
 # --next action wording per profile: learning speaks to the human doing the
-# work; copilot speaks to orch dispatching cards. The copilot wording assumes
-# the common project shape (feature-matrix deliverables are DE-owned RTL);
-# projects where that role assumption is wrong (e.g. vendored-DUT repos whose
-# deliverables are DV-owned tb code — pulp_axi_xbar FB-8) remap individual
-# phrases via `next_phrases_override` in iverif.json. Overrides must keep the
-# original phrase's %(...)s placeholders.
+# work; copilot speaks to orch dispatching cards. The deliverable-owning
+# role in the copilot wording (%(role)s) is derived from the project's own
+# delivery config (tb/-rooted glob → DV-owned tb code, else DE-owned RTL;
+# explicit delivery.owner wins) so vendored-DUT repos are correct with zero
+# config (pulp_axi_xbar FB-8). `next_phrases_override` in iverif.json stays
+# as the escape hatch for genuinely project-specific wording; overrides must
+# keep the original phrase's %(...)s placeholders.
 NEXT_PHRASES = {
     "learning": {
         "bug_open_spec": "%(bid)s OPEN (spec issue) → request rev arbitration",
@@ -587,12 +588,13 @@ NEXT_PHRASES = {
                          "--bug %(bid)s after the re-run",
         "tp_fail": "testplan %(rid)s ❌ → DV checks stimulus/checker first; "
                    "still RTL-suspect → file in bugs.md",
-        "undelivered": "%(mod)s RTL not delivered (%(ids)s, design prompt "
-                       "ready) → dispatch DE card",
+        "undelivered": "%(mod)s deliverable missing (%(ids)s, design prompt "
+                       "ready) → dispatch %(role)s card",
         "unverified": "%(mod)s scenarios %(scenes)s not ✅ → dispatch DV "
                       "scenario card",
         "prompt_missing": "%(mod)s lacks doc/design-prompt/%(mod)s.md → "
-                          "dispatch arch card (rev gate before any DE card)",
+                          "dispatch arch card (rev gate before any "
+                          "%(role)s card)",
     },
 }
 
@@ -661,7 +663,8 @@ def cmd_next():
         unverif = sorted({s for r in rows for s in linked_scenes(r)
                           if s not in tp_pass})
         ctx = {"mod": mod, "ids": " ".join(ids),
-               "scenes": " ".join(unverif)}
+               "scenes": " ".join(unverif),
+               "role": CFG.delivery_owner.upper()}
         prompt = CFG.doc / "design-prompt" / ("%s.md" % mod)
         if deliv is False and P["prompt_missing"] and not prompt.exists():
             acts.append((2, P["prompt_missing"] % ctx))

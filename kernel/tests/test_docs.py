@@ -238,6 +238,46 @@ class TestProfiles(DocsBase):
         self.assertNotEqual(cp.returncode, 0)
         self.assertIn("no_such_phrase", cp.stderr + cp.stdout)
 
+    def test_copilot_next_derives_deliverable_owner(self):
+        # FB-8 root fix (user ruling 2026-07-28): the deliverable-owning
+        # role in `--next` copilot wording derives from delivery config the
+        # project already declares — tb/-rooted glob → DV (vendored-DUT
+        # repos), zero config needed. Explicit delivery.owner overrides.
+        def co_project(suffix, cfg_overrides, with_prompt):
+            p = Path(self.tmp.parent) / (self.tmp.name + suffix)
+            self.addCleanup(shutil.rmtree, p, True)
+            make_project(p, profile="copilot", overrides=cfg_overrides)
+            (p / "doc" / "feature-matrix.md").write_text(
+                "# Feature matrix\n\n" + _table(EN["fm_header"], [
+                    "| F-001 | M1 | smoke bring-up | (all) | M1-01 |",
+                    "| F-002 | M1 | widget feature | widget | M1-01 |"]),
+                encoding="utf-8")
+            if with_prompt:
+                (p / "doc" / "design-prompt" / "widget.md").write_text(
+                    "# widget\n", encoding="utf-8")
+            return p
+
+        # fixture glob is tb/{name}.sv → derived owner DV, both phrases
+        p = co_project("_dv", {}, with_prompt=True)
+        cp = run(p, "docs.py", "--next", check=True)
+        self.assertIn("dispatch DV card", cp.stdout)
+        p = co_project("_dvp", {}, with_prompt=False)
+        cp = run(p, "docs.py", "--next", check=True)
+        self.assertIn("rev gate before any DV card", cp.stdout)
+        # explicit owner beats the derivation
+        p = co_project("_de", {"delivery": {"glob": "tb/{name}.sv",
+                                            "owner": "de"}},
+                       with_prompt=True)
+        cp = run(p, "docs.py", "--next", check=True)
+        self.assertIn("dispatch DE card", cp.stdout)
+        # invalid owner fails loudly
+        p = co_project("_bad", {"delivery": {"glob": "tb/{name}.sv",
+                                             "owner": "orch"}},
+                       with_prompt=True)
+        cp = run(p, "docs.py", "--next")
+        self.assertNotEqual(cp.returncode, 0)
+        self.assertIn("delivery.owner", cp.stderr + cp.stdout)
+
     def test_copilot_requires_design_prompt_dir(self):
         co = Path(self.tmp.parent) / (self.tmp.name + "_co")
         self.addCleanup(shutil.rmtree, co, True)

@@ -15,6 +15,7 @@ into git (enforced by the `.gitignore` template).
 | 3 | `# spec_ref: <SPEC-x.y[, ...]>` | header comment | convention now, hard check deferred | evidence.py `--spec-ref` | deferred (see docs/deferred.md) |
 | 4 | `# coverage_delta: <...>` | header comment | optional | evidence.py (manual value; xcov auto-capture deferred) | deferred |
 | 5 | Result excerpt | body | yes | evidence.py | must show zero `UVM_ERROR`/`UVM_FATAL` (UVM logs) or the VCS completion marker with zero `Error`/`Fatal` lines (plain logs) |
+| 6 | Coverage summary lines: the tb prints one line per covergroup, `[FCOV_SUMMARY] <cg> samples=<n> inst_cov=<pct>` | body, `## Key check lines` | when functional coverage exists | tb prints, evidence.py captures | canon `KEY_LINE_RE` knows the tag (no project config needed); further project-specific tags ride `key_line_extra` in `iverif.json`. Rationale: the coverage **numbers** must live in the evidence itself, or milestone signoff has to re-open source logs — the self-sufficiency this record exists to provide |
 
 ## Hard rules
 
