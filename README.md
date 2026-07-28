@@ -94,15 +94,23 @@ learning repo (same evidence discipline, `rev` agent reviews only):
 Both lines share this framework, so their evidence is comparable and neither
 can quietly lower the bar.
 
-## Drift control
+## Drift control & forks
 
-- Project repos carry `scripts/iverif.manifest.json`: framework version +
-  sha256 per pinned file. `make fw-check` re-hashes and reports any local
-  edit (warn in pre-commit, hard-fail in project CI).
-- Emergency in-project fixes are allowed — the red `fw-check` stays on until
-  the fix flows back here and the project re-pulls.
-- The kernel has its own regression tests and CI. Any bug fixed once gets a
-  fuse test so it can never silently return via a stale copy.
+The enemy is silent drift, not adaptation. Three sanctioned states:
+
+- **Pristine** (green): `scripts/iverif.manifest.json` pins version + sha256
+  per file; `make fw-check` re-hashes (warn in pre-commit, hard-fail in CI).
+- **Declared divergence** (yellow): a local edit registered in
+  `scripts/iverif.divergence.json` (reason + upstream ref). fw-check lists
+  it and passes. A declaration is a loan — feed it back via the project's
+  fw-feedback, or graduate to a fork.
+- **Fork** (green again): clone this repo, point `framework_repo` in
+  `iverif.json` at your fork; `make fw-pull` now tracks it. Feedback
+  upstream stays welcome.
+
+Undeclared edits stay red. The kernel has its own regression tests; any bug
+fixed once gets a fuse test so it can never silently return via a stale
+copy.
 
 ## Why this exists
 

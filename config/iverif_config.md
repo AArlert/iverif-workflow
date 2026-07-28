@@ -12,6 +12,7 @@ overrides individual keys.
 | Key | Required | Default | Meaning |
 |---|---|---|---|
 | `framework` | recommended | — | Framework version this project last pulled (informational; `fwsync --pull` updates it, diffs make upgrades visible) |
+| `framework_repo` | recommended | — | Path to the upstream framework checkout (relative to project root or absolute); written by `--init`. Lets `make fw-pull` refresh with no arguments — and makes a fork a first-class upstream: point it at your fork |
 | `profile` | **yes** | — | `learning` or `copilot` — see the pinned `workflow/profile.md` |
 | `project_name` | **yes** | — | Used in handover banners and regression summaries |
 | `columns_preset` | no | `en` | `en` or `zh` — table column names (legacy repos keep `zh` and change zero docs) |

@@ -190,6 +190,41 @@ class TestPull(FwsyncBase):
         self.assertEqual(cp.returncode, 0, cp.stdout)
 
 
+class TestSoftAdaptation(FwsyncBase):
+    def test_pull_uses_framework_repo_key(self):
+        # Fork-as-upstream: --init records the upstream path; a bare
+        # `--pull` (make fw-pull) resolves it from iverif.json.
+        self.init_project()
+        cfg = json.loads((self.proj / "iverif.json")
+                         .read_text(encoding="utf-8"))
+        self.assertEqual(cfg["framework_repo"], os.path.join("..", "fw"))
+        (self.fw / "VERSION").write_text("9.9.9\n", encoding="utf-8")
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--pull")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        m = json.loads((self.proj / "scripts" / "iverif.manifest.json")
+                       .read_text(encoding="utf-8"))
+        self.assertEqual(m["framework"], "9.9.9")
+
+    def test_declared_divergence_yellow_undeclared_red(self):
+        self.init_project()
+        docs = self.proj / "scripts" / "docs.py"
+        docs.write_text(docs.read_text(encoding="utf-8") + "\n# local\n",
+                        encoding="utf-8")
+        (self.proj / "scripts" / "iverif.divergence.json").write_text(
+            json.dumps({"files": {"scripts/docs.py": {
+                "reason": "hotfix", "upstream_ref": "FB-99"}}}),
+            encoding="utf-8")
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
+        self.assertEqual(cp.returncode, 0, cp.stdout)
+        self.assertIn("DECLARED", cp.stdout)
+        ev = self.proj / "scripts" / "evidence.py"
+        ev.write_text(ev.read_text(encoding="utf-8") + "\n# sneaky\n",
+                      encoding="utf-8")
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
+        self.assertEqual(cp.returncode, 1)
+        self.assertIn("undeclared", cp.stdout)
+
+
 class TestGenManifest(FwsyncBase):
     def test_gen_manifest_covers_snapshot_set(self):
         cp = run_py(self.fw / "kernel" / "fwsync.py", "--gen-manifest")

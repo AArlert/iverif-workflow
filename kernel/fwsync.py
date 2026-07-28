@@ -19,6 +19,7 @@
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import stat
 import sys
@@ -77,7 +78,8 @@ def framework_root(arg=None):
         return p
     if is_framework(HERE.parent):
         return HERE.parent
-    die("run from a framework checkout, or pass the framework path")
+    die("run from a framework checkout, pass the framework path, or set "
+        "framework_repo in iverif.json")
 
 
 def project_root(arg=None):
@@ -166,6 +168,9 @@ def cmd_check():
         die("no %s — this project has no framework snapshot yet "
             "(run --pull <framework-clone>)" % mpath.relative_to(proj))
     manifest = json.loads(mpath.read_text(encoding="utf-8"))
+    dpath = proj / "scripts" / "iverif.divergence.json"
+    div = (json.loads(dpath.read_text(encoding="utf-8")).get("files", {})
+           if dpath.exists() else {})
     missing, modified = [], []
     for rel, sha in sorted(manifest["files"].items()):
         p = proj / rel
@@ -173,19 +178,34 @@ def cmd_check():
             missing.append(rel)
         elif norm_sha(p) != sha:
             modified.append(rel)
-    if not missing and not modified:
-        print("fw-check passed (framework %s, %d files pinned)"
-              % (manifest.get("framework", "?"), len(manifest["files"])))
+    undeclared = [f for f in modified if f not in div]
+    declared = [f for f in modified if f in div]
+    for f in declared:
+        print("[DECLARED] %s — %s (upstream: %s)"
+              % (f, div[f].get("reason", "?"),
+                 div[f].get("upstream_ref", "none")))
+    for f in sorted(set(div) - set(modified)):
+        print("[STALE] declared but pristine — drop from "
+              "iverif.divergence.json: %s" % f)
+    if not missing and not undeclared:
+        if declared:
+            print("fw-check: %d declared divergence(s) — a loan, not a "
+                  "state: feed back upstream (doc/fw-feedback.md) or make "
+                  "your upstream a fork (framework_repo)" % len(declared))
+        else:
+            print("fw-check passed (framework %s, %d files pinned)"
+                  % (manifest.get("framework", "?"),
+                     len(manifest["files"])))
         return 0
     for f in missing:
         print("[FAIL] pinned file missing: %s" % f)
-    for f in modified:
-        print("[FAIL] pinned file modified locally: %s" % f)
-    print("\nfw-check failed: the framework snapshot must stay pristine.\n"
-          "Improve the framework repo instead, then: "
-          "python3 scripts/fwsync.py --pull <framework-clone>\n"
-          "(emergency local fixes may stay temporarily — flow them back "
-          "within a day)")
+    for f in undeclared:
+        print("[FAIL] pinned file modified locally (undeclared): %s" % f)
+    print("\nfw-check failed. Either revert / re-pull (make fw-pull), or\n"
+          "declare the divergence in scripts/iverif.divergence.json:\n"
+          '  {"files": {"<rel>": {"reason": "...", "upstream_ref": '
+          '"FB-x|fork"}}}\n'
+          "Silent drift is the enemy; declared divergence is auditable.")
     return 1
 
 
@@ -345,6 +365,7 @@ def cmd_init(target, profile, columns, project_name):
     ver = fw_version(fw)
 
     cfg = {"framework": ver, "profile": profile, "project_name": name,
+           "framework_repo": os.path.relpath(str(fw), str(proj)),
            "columns_preset": columns,
            "delivery": {"glob": "tb/{name}.sv"},
            "sim_log": "sim/out/{test}_{seed}.log",
@@ -437,8 +458,18 @@ def main():
     elif args.check:
         sys.exit(cmd_check())
     elif args.pull is not None:
-        fw = framework_root(args.pull or None)
         proj = project_root(args.into)
+        src = args.pull or None
+        if src is None and HERE.name == "scripts":
+            # One-command pull: resolve the upstream from iverif.json.
+            cfg_path = proj / "iverif.json"
+            if cfg_path.exists():
+                repo = json.loads(cfg_path.read_text(
+                    encoding="utf-8")).get("framework_repo")
+                if repo:
+                    src = repo if Path(repo).is_absolute() \
+                        else str((proj / repo).resolve())
+        fw = framework_root(src)
         if not (proj / "iverif.json").exists() and HERE.name != "scripts":
             die("target has no iverif.json — for a brand-new project use "
                 "--init")

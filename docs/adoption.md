@@ -102,6 +102,20 @@ Same as scenario 2 with `"profile": "copilot"`, plus:
   (`python3 scripts/docs.py --pin-spec`) in the same commit, with a
   change-record row noting "line-ending normalization, no content change".
 
+## 4. Fork / soft adaptation (non-creator users, diverging downstreams)
+
+Three states, all auditable (README §Drift control & forks):
+
+1. **Emergency local fix**: edit the pinned file, declare it in
+   `scripts/iverif.divergence.json` (`reason` + `upstream_ref`) — fw-check
+   turns yellow instead of red. Feed it back via `doc/fw-feedback.md`.
+2. **Fork**: clone the framework repo, point `framework_repo` in
+   `iverif.json` at the fork. `make fw-pull` refreshes from it with no
+   arguments. Your fork is now canon for your projects; upstreaming
+   improvements stays welcome.
+3. **Back to pristine**: after the fix lands upstream, `make fw-pull`, then
+   delete the divergence entry (fw-check flags stale ones).
+
 ## Upgrading later (any repo)
 
 ```bash
