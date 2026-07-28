@@ -24,10 +24,11 @@ It is read-only — it never edits state.
    in the waves/logs that they were hit by the *intended* scenario, not
    incidentally. Pick 1 waived hole and re-read the unreachability
    argument.
-5. **Guard falsification.** Pick 1 failure record with a regression guard;
-   re-introduce the original defect (locally, throwaway branch) and confirm
-   the guard actually fires. A guard that has never been seen red is a
-   hypothesis, not a guard.
+5. **Guard consumption + falsification.** `make guards FILES="<files this
+   milestone touched>"` — every hit is review scope: confirm it was
+   honored. Falsify at least one: re-introduce the original defect
+   (locally, throwaway branch) and confirm the guard fires. A guard that
+   has never been seen red is a hypothesis, not a guard.
 6. **Spec debt is zero or accepted.** The open SPEC_ISSUE list is empty, or
    each entry has a written acceptance rationale.
 

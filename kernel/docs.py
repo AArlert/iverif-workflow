@@ -825,8 +825,8 @@ def cmd_signoff():
           "workflow/signoff/rubric.md):")
     print("  4. coverage closure ≠ risk closure: verify 2-3 hit bins were "
           "hit by the intended scenario; re-read 1 waived hole")
-    print("  5. guard falsification: re-introduce one FL's original defect, "
-          "confirm the guard fires")
+    print("  5. guards: make guards FILES=<touched> lists the review "
+          "scope; falsify at least one (re-introduce its defect, see red)")
     print("  6. open SPEC_ISSUE list empty, or each entry has a written "
           "acceptance rationale")
     return 1 if fails else 0
@@ -895,6 +895,35 @@ def cmd_repro(rid):
     sys.exit("scenario %s not found in testplan" % rid)
 
 
+def cmd_guards(paths):
+    """Print every registered regression_guard whose `paths:` globs match
+    any given file path. Consumed at card assembly (dispatch self-check)
+    and by rubric #5 — constraint propagation by registered fact, which is
+    what the instance-isolation rules cannot carry (pulp BUG-0015: a guard
+    named the next victim file and nothing consumed it)."""
+    import fnmatch
+    hits = 0
+    for page in sorted(CFG.bug_pages.glob("*.md")):
+        text = page.read_text(encoding="utf-8", errors="replace")
+        m = re.search(r"^## regression_guard\s*\n(.*?)(?=^## |\Z)", text,
+                      re.M | re.S)
+        if not m:
+            continue
+        block = m.group(1).strip()
+        pm = re.search(r"^paths:\s*(.+)$", block, re.M)
+        if not pm:
+            continue
+        globs = [g for g in re.split(r"[,\s]+", pm.group(1).strip()) if g]
+        matched = [p for p in paths
+                   if any(fnmatch.fnmatch(p, g) for g in globs)]
+        if matched:
+            hits += 1
+            print("== %s guard (hit: %s) ==" % (page.stem,
+                                                " ".join(matched)))
+            print(block + "\n")
+    print("%d guard(s) matched" % hits)
+
+
 def main():
     global CFG
     parser = argparse.ArgumentParser(
@@ -915,6 +944,8 @@ def main():
                         help="print a scenario's full evidence chain")
     parser.add_argument("--repro", metavar="SCEN",
                         help="print a scenario's replay command")
+    parser.add_argument("--guards", nargs="+", metavar="PATH",
+                        help="print regression_guards binding these paths")
     args = parser.parse_args()
     CFG = load_config()
     if args.pin_spec:
@@ -929,6 +960,8 @@ def main():
         cmd_chain(args.chain)
     if args.repro:
         cmd_repro(args.repro)
+    if args.guards:
+        cmd_guards(args.guards)
     if args.handover:
         cmd_handover()
     if args.next:

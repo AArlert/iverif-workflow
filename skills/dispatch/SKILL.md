@@ -43,6 +43,10 @@ card by type:
       dispatch).
 - [ ] The card states its acceptance criteria (rev gate passed /
       compile+lint clean / scenario PASS + evidence / review record path).
+- [ ] `make guards FILES="<the card's file list>"` run; every matched
+      guard block pasted into the card verbatim (registered fact, no
+      reasoning attached — this is how constraints cross the isolation
+      boundary).
 
 ## 4. Collection check
 

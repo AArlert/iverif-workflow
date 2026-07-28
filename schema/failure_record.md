@@ -64,9 +64,14 @@ Evidence records proving the fix: original failing TEST+SEED now passing,
 plus neighboring scenarios re-checked.
 
 ## regression_guard
-type: sva | covergroup | directed_test | checklist
+type: sva | covergroup | directed_test | script | checklist
+paths: tb/sva/*.sv         <- binding globs, machine-matched (make guards)
 ref: tb/sva/per_id_order_check.sv
 note: what future regression this blocks.
+(Guards are consumed mechanically — `make guards FILES=...` at card
+assembly and at signoff; a guard without `paths:` can never be injected.
+A checklist guard is a mechanization TODO, not a terminus: note what
+script/SVA it should become, or why it cannot.)
 
 ## similar
 FL ids of related historical failures, or "none searched-on: <keywords>".

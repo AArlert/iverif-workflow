@@ -3,6 +3,32 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.4.1 — 2026-07-28
+
+Guard injection — registered guards get a forced consumer (gap reported by
+pulp_axi_xbar_copilot with a complete判例: BUG-0015's guard named its next
+victim file in `## similar`; no mechanism carried it into the REV card that
+reviewed exactly that file; the defect landed as predicted). Isolation
+rightly blocks *reasoning* from crossing cards; constraints must cross as
+*registered facts* — bugs.md was always the carrier, consumption was the
+missing half.
+
+- **`## regression_guard` gains `paths:`** (machine-matched globs); `ref:`
+  stays the artifact anchor. Authoring rule: a checklist guard is a
+  mechanization TODO, not a terminus.
+- **`docs.py --guards <paths…>` / `make guards FILES=…`**: prints every
+  guard whose globs match — pure path intersection, no interpretation, so
+  orch stays non-technical and no common-mode channel opens.
+- **Two consumption hooks**: dispatch self-check (matched blocks pasted
+  into the card verbatim) and rubric #5 (every guard hit by the
+  milestone's touched files is review scope; falsify ≥1 — replacing the
+  1-of-N sample).
+- Deferred: rca-agent row annotated (trigger fired; pain shape was
+  consumption → built this instead); new row for gate self-attestation
+  ("no proof-of-execution no gate-pass", pulp BUG-0022) awaiting pulp's
+  FB-10 prototype measurements before the canon mechanism lands.
+- Tests: 56 → 57 (the BUG-0015判例 as a fuse).
+
 ## 0.4.0 — 2026-07-28
 
 Lean-and-turnkey overhaul. Governing principles (user ruling): effective ·

@@ -198,6 +198,25 @@ class TestArchive(DocsBase):
         self.assertIn("nothing to archive", cp.stdout)
 
 
+class TestGuards(DocsBase):
+    def test_guards_query_matches_paths(self):
+        # pulp BUG-0015判例 fuse: a guard that names its victim files must
+        # surface when those files are about to be touched.
+        page = self.doc("bugs") / "BUG-0001.md"
+        page.write_text(
+            "# BUG-0001\n\n## regression_guard\ntype: checklist\n"
+            "paths: tb/sva/*.sv, sim/Makefile\n"
+            "note: fold tracked-state reads before property use\n",
+            encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--guards", "tb/sva/stall_sva.sv",
+                 "rtl/core.sv", check=True)
+        self.assertIn("BUG-0001", cp.stdout)
+        self.assertIn("fold tracked-state reads", cp.stdout)
+        self.assertIn("1 guard(s) matched", cp.stdout)
+        cp = run(self.tmp, "docs.py", "--guards", "rtl/core.sv", check=True)
+        self.assertIn("0 guard(s) matched", cp.stdout)
+
+
 class TestChainRepro(DocsBase):
     def test_chain_and_repro(self):
         set_scenario_green(self.tmp)
