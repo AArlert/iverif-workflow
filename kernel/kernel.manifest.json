@@ -7,7 +7,7 @@
     "scripts/bump.py": "cd2a2172f5b46ebbdbc2907d3f5098d647249148b3e4721ba470580ee94aa581",
     "scripts/docs.py": "2f0c42337c0055f10c0c909e439c75496f8459f9c1710bb0738b1b67897c095f",
     "scripts/evidence.py": "ffbf5408c92c033ac1f824e30c58931582c53cf2be6328960b86c7cc128827be",
-    "scripts/fwsync.py": "e51c2c38f378eb13d23346c13160593f81eaab24d4b21400e8c482cec36ed008",
+    "scripts/fwsync.py": "bdac39a35e34ed875723a047b69d975b0d30633e073d9a93afdd7c52576f5526",
     "scripts/iverif_config.py": "aee3aba997f18fdb3c60416a1537916aeb5ae3e5dec455f1d3216d64c63a1452",
     "scripts/make/core.mk": "fb044094fda659c34086005ef6ee2f778802d8c7d79ea06abf56aa0ec3c4c3b2",
     "scripts/make/evidence.mk": "bbead09f0d1682352450fbe4da3cc0c7d944098078c03076a0b2777488158475",
@@ -29,5 +29,5 @@
     "workflow/review/six_questions.md": "3eadd264c4f9ed9c902e1aa9bd3a060eaa32d1fa12225b830f7323c55458d957",
     "workflow/testplan_entry.md": "c66d8fe948f82b94bc719c1191a8d6a54d10a8c7a7eca28340511f692ee082c7"
   },
-  "version": "0.6.1"
+  "version": "0.7.0"
 }

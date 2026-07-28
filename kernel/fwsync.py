@@ -269,6 +269,10 @@ def do_pull(fw, proj):
         if norm_sha(p) == sha:
             p.unlink()
             print("removed orphan (no longer pinned): %s" % rel)
+            try:
+                p.parent.rmdir()  # drop the dir when the sweep emptied it
+            except OSError:
+                pass
         else:
             print("warning: %s no longer pinned but locally modified — "
                   "review and delete by hand" % rel)

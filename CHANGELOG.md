@@ -3,6 +3,61 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.7.0 — 2026-07-29
+
+**Structural refactor: the layout is the mental model.** Origin: the
+author could no longer rebuild the framework in their head — conceptual
+drift, the disease fw-check kills at file level, one level up. Generating
+axioms (a convention this entry inaugurates): self-application (the repo
+now passes its own gates on its own shape), recording (the mental model is
+written down and shipped), consumption (every shipped doc must name its
+consumer — test-enforced).
+
+- **`CONSTITUTION.md`** (new, ships as `workflow/constitution.md`,
+  4800-byte hard cap): five axioms (self-application 自反 · independence
+  独立 · recording 落盘 · consumption 消费 · pain-gating 痛点), the one
+  machine loop, the four core invariants' canonical home (moved from
+  README), and the mechanism index (doc · axioms · consumer). Read order
+  in every project is now constitution → discipline → profile.
+- **Canon re-laid so `ls` shows the model**: contracts under `loop/`
+  (≡ project `workflow/`, one strip-prefix mapping rule; `review/` =
+  the review station, `fail/` = the whole failure branch — old
+  `schema/` + `taxonomy/` + `dispatch/` genre dirs dissolved);
+  Claude-coupled render sources under `harness/`; canon-only
+  self-application layer under `governance/` (deferred ledger,
+  design-notes, adoption, external reviews).
+- **Unified provenance header** on all 29 shipped docs:
+  `Canonical: <path> — pinned snapshot. Axioms: <…>. Consumer: <…>.`
+  New gate `kernel/tests/test_constitution.py`: header well-formed,
+  axiom names ⊆ the five, consumer non-empty, and the constitution's
+  index covers the snapshot. Budgets +200B table-wide (reviewed: header
+  tax, not prose growth).
+- **fwsync**: single mapping rule replaces `SNAPSHOT_REF_DIRS`;
+  completeness probe additionally requires `workflow/constitution.md`
+  (fail-closed against pre-0.7.0 pulls); orphan sweep now also drops
+  directories it emptied. New fuse: `test_pull_migrates_old_layout`
+  pins the exact 0.6.x → 0.7.0 adopter experience.
+- Cross-reference convention: shipped docs cite snapshot paths
+  (`workflow/…`, `scripts/…`); canon-only docs cite canon paths. Three
+  pre-existing dangling refs fixed in passing (`config/presets/
+  columns.zh.json`, `templates/CLAUDE.project.md` header, discipline's
+  "(README)" invariant pointer — dead in every project copy).
+- **What adopters see on `make fw-pull`**: `workflow/` re-lays
+  (schema|signoff|taxonomy|dispatch → top level + `review/` + `fail/`),
+  `workflow/constitution.md` appears; pristine old-path files are swept
+  automatically, locally-edited ones only warn — re-apply on the new
+  path, delete the old file, re-key `scripts/iverif.divergence.json`
+  entries. `.claude/agents/` regenerates as always; **CLAUDE.md does
+  not** — hand-migrate its three framework-owned paths
+  (`workflow/schema/testplan_entry.md` → `workflow/testplan_entry.md`,
+  `workflow/dispatch/*.md` → `workflow/fail/*.md`,
+  `workflow/schema/failure_record.md` → `workflow/fail/failure_record.md`)
+  and add the constitution read-first line, or diff against the 0.7.0
+  template. `next_phrases_override` values naming `workflow/dispatch/`
+  need the same rename. Pre-0.4.2 snapshots (no bootstrap hop): pull
+  once via the framework clone directly.
+- Tests: 75 → 79.
+
 ## 0.6.1 — 2026-07-28
 
 FB-21 + FB-22 (pulp, third strike of the no-consumer family and a

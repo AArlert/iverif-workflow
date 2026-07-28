@@ -4,6 +4,36 @@ Genealogy and adaptation records. Operative docs state rules and their
 checks; the "why we chose this shape" stories live here. Anything in this
 file is deliberately invisible to project repos.
 
+## 0.7.0 structural refactor: the layout is the mental model
+
+Origin: the author reported being unable to rebuild the framework in their
+head — conceptual drift, the same disease fw-check kills at file level, one
+level up. Adjudications:
+
+- **loop-strip is the one mapping rule**: canon `loop/<p>` ships as
+  `workflow/<p>`; the canon directory that defines the machine IS the
+  project's workflow tree. Named exceptions only: `CONSTITUTION.md` →
+  `workflow/constitution.md` (unconditional, fail-closed) and per-profile
+  `profile.*` selection.
+- **`fail/` unifies the failure branch**: the old `schema/` + `taxonomy/` +
+  `dispatch/` split grouped docs by *genre*; a reader had to know the genre
+  taxonomy before finding the failure loop. One directory per branch of the
+  machine beats one per document kind.
+- **`review/` (station name) over `signoff/`**: the station is rev's
+  independent review; milestone signoff is one of its tasks. The old
+  canon-level `review/` (external audits) moved to `governance/reviews/`.
+- **Numbered station dirs rejected**: sparse stubs for stations 3/6 would
+  be infrastructure without content; the loop's order lives in the
+  constitution's diagram, not in directory names.
+- **Invariants' canonical shipped home moved README → CONSTITUTION.md**
+  (discipline.md's "(README)" pointer was a dead ref in every project copy).
+- **Uniform +200B budget raise**: the mandatory provenance header
+  (Canonical/Axioms/Consumer, checked by `test_constitution`) is contract,
+  not prose growth; one reviewed table-wide raise beats 24 per-row notes.
+- **Axiom vocabulary is closed** (five names, English in headers, bilingual
+  in the constitution): an unknown axiom in a header fails the gate — a
+  genuinely new axiom is a constitution amendment first.
+
 ## Evidence records: log excerpts, not the design doc's EV-xxxx.yaml
 
 The founding design doc sketched YAML evidence records. The canon keeps the

@@ -313,6 +313,7 @@ class TestPullIntegrity(FwsyncBase):
         cp = run_py(self.proj / "scripts" / "fwsync.py", "--pull")
         self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
         self.assertFalse(old_pristine.exists())
+        self.assertFalse(old_pristine.parent.exists())  # emptied dir swept
         self.assertIn("removed orphan", cp.stdout)
         self.assertTrue(old_edited.exists())
         self.assertIn("locally modified", cp.stdout)
