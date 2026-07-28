@@ -3,6 +3,35 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.4.0 — 2026-07-28
+
+Lean-and-turnkey overhaul. Governing principles (user ruling): effective ·
+lean · clear · token-cheap, for this repo and every pinned snapshot.
+
+- **Naming**: the framework snapshot is "pinned snapshot" everywhere;
+  "vendor" now refers only to upstream DUT RTL (`templates/VENDOR.md` draws
+  the line). fwsync internals renamed accordingly. Pinned-doc examples
+  de-flavored (no DUT-specific names).
+- **Profile contracts split**: `docs/profile.{learning,copilot}.md`, pinned
+  as `workflow/profile.md` — a project receives only its own contract,
+  selected at sync (file selection, no marker DSL). `docs/profiles.md`
+  removed; genealogy sections moved to canon-only `docs/design-notes.md`,
+  which never ships.
+- **Diet**: xverif entry/probing rules live once (vcs-2018.mk header; six
+  restatements became pointers); chronicle left the snapshot; README
+  §Design principles now leads with the four principles + "write it as
+  short as it can be"; discipline rule 2 gains the prose corollary.
+  Same-basis reference-doc set: 34.9KB → 29.7KB.
+- **Budget gate**: `kernel/tests/test_budgets.py` caps every shipped doc's
+  bytes (~12% headroom); table coverage is itself tested. Raising a cap is
+  a reviewed decision, not a fix.
+- **Soft adaptation**: `framework_repo` in iverif.json (written by
+  `--init`) → argument-free `make fw-pull`, and a fork becomes a
+  first-class upstream. `scripts/iverif.divergence.json` declares local
+  edits: fw-check lists them and passes (yellow); undeclared edits stay
+  red. Fork playbook: `docs/adoption.md` §4.
+- Tests: 52 → 56.
+
 ## 0.3.3 — 2026-07-28
 
 User ruling on 0.3.2's design: **zero-config correctness beats config
