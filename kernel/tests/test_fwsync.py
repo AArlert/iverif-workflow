@@ -52,8 +52,10 @@ class TestInit(FwsyncBase):
     def test_init_pins_workflow_and_renders_agent(self):
         self.init_project("--project", "my_dut")
         self.assertTrue(
-            (self.proj / "workflow" / "signoff" / "six_questions.md")
+            (self.proj / "workflow" / "review" / "six_questions.md")
             .exists())
+        self.assertTrue(
+            (self.proj / "workflow" / "constitution.md").exists())
         # Profile contract arrives as workflow/profile.md — only the
         # project's own profile, selected at sync (no in-file markers).
         prof = ((self.proj / "workflow" / "profile.md")
@@ -149,14 +151,14 @@ class TestDriftDetection(FwsyncBase):
         self.assertIn("scripts/docs.py", cp.stdout)
 
     def test_missing_pinned_file_detected(self):
-        (self.proj / "workflow" / "signoff" / "rubric.md").unlink()
+        (self.proj / "workflow" / "review" / "rubric.md").unlink()
         cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
         self.assertEqual(cp.returncode, 1)
         self.assertIn("missing", cp.stdout)
 
     def test_crlf_working_tree_still_passes(self):
         # Simulate a Windows checkout: same content, CRLF endings.
-        f = self.proj / "workflow" / "signoff" / "rubric.md"
+        f = self.proj / "workflow" / "review" / "rubric.md"
         data = f.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
         f.write_bytes(data)
         cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
@@ -167,7 +169,7 @@ class TestPull(FwsyncBase):
     def test_pull_refreshes_snapshot_and_version(self):
         self.init_project()
         # Framework evolves: content change + version bump.
-        rubric = self.fw / "signoff" / "rubric.md"
+        rubric = self.fw / "loop" / "review" / "rubric.md"
         rubric.write_text(rubric.read_text(encoding="utf-8")
                           + "\nnew rubric clause\n", encoding="utf-8")
         (self.fw / "VERSION").write_text("0.2.0\n", encoding="utf-8")
@@ -177,7 +179,7 @@ class TestPull(FwsyncBase):
         self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
 
         self.assertIn("new rubric clause",
-                      (self.proj / "workflow" / "signoff" / "rubric.md")
+                      (self.proj / "workflow" / "review" / "rubric.md")
                       .read_text(encoding="utf-8"))
         manifest = json.loads(
             (self.proj / "scripts" / "iverif.manifest.json")
@@ -274,6 +276,51 @@ class TestPullIntegrity(FwsyncBase):
         self.assertEqual(cp.returncode, 1)
         self.assertIn("manifest incomplete", cp.stdout)
 
+    def test_constitution_missing_from_manifest_fails_check(self):
+        # The constitution ships to every profile; a manifest without it
+        # was written by a pre-0.7.0 fwsync — fail-closed, like profile.md.
+        self.init_project()
+        mpath = self.proj / "scripts" / "iverif.manifest.json"
+        m = json.loads(mpath.read_text(encoding="utf-8"))
+        del m["files"]["workflow/constitution.md"]
+        mpath.write_text(json.dumps(m), encoding="utf-8")
+        (self.proj / "workflow" / "constitution.md").unlink()
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
+        self.assertEqual(cp.returncode, 1)
+        self.assertIn("manifest incomplete", cp.stdout)
+
+    def test_pull_migrates_old_layout(self):
+        # 0.6.x → 0.7.0 fuse: the snapshot re-lay (workflow/schema|signoff|
+        # taxonomy|dispatch → top level + review/ + fail/) must sweep
+        # pristine old-path files and leave locally edited ones with a
+        # warning — the exact adopter upgrade experience.
+        import hashlib
+        self.init_project()
+        old_pristine = (self.proj / "workflow" / "schema"
+                        / "evidence_record.md")
+        old_edited = self.proj / "workflow" / "signoff" / "rubric.md"
+        old_pristine.parent.mkdir(parents=True, exist_ok=True)
+        old_edited.parent.mkdir(parents=True, exist_ok=True)
+        old_pristine.write_text("old contract\n", encoding="utf-8")
+        old_edited.write_text("locally adapted\n", encoding="utf-8")
+        mpath = self.proj / "scripts" / "iverif.manifest.json"
+        m = json.loads(mpath.read_text(encoding="utf-8"))
+        m["files"]["workflow/schema/evidence_record.md"] = hashlib.sha256(
+            b"old contract\n").hexdigest()
+        m["files"]["workflow/signoff/rubric.md"] = hashlib.sha256(
+            b"what was pinned\n").hexdigest()  # on-disk copy differs
+        mpath.write_text(json.dumps(m), encoding="utf-8")
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--pull")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        self.assertFalse(old_pristine.exists())
+        self.assertIn("removed orphan", cp.stdout)
+        self.assertTrue(old_edited.exists())
+        self.assertIn("locally modified", cp.stdout)
+        self.assertTrue(
+            (self.proj / "workflow" / "evidence_record.md").exists())
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
+        self.assertEqual(cp.returncode, 0, cp.stdout)
+
 
 class TestGenManifest(FwsyncBase):
     def test_gen_manifest_covers_snapshot_set(self):
@@ -285,7 +332,10 @@ class TestGenManifest(FwsyncBase):
         self.assertIn("scripts/docs.py", keys)
         self.assertIn("scripts/svacheck.py", keys)
         self.assertIn("scripts/make/vcs-2018.mk", keys)
-        self.assertIn("workflow/schema/evidence_record.md", keys)
+        self.assertIn("workflow/constitution.md", keys)
+        self.assertIn("workflow/evidence_record.md", keys)
+        self.assertIn("workflow/review/rubric.md", keys)
+        self.assertIn("workflow/fail/failure_record.md", keys)
         self.assertIn("workflow/profile.learning.md", keys)
         self.assertIn("workflow/profile.copilot.md", keys)
         self.assertIn(".claude/skills/handover/SKILL.md", keys)

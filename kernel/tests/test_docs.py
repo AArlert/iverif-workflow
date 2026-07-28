@@ -234,7 +234,7 @@ class TestAcceptedState(DocsBase):
         # criteria source and the tool gave opposite verdicts on the same
         # gate. Pin both surfaces to the ACCEPTED-aware wording, and pin
         # the #7 rationale spot check (FB-18(b)) on both.
-        rubric = (Path(__file__).resolve().parents[2] / "signoff"
+        rubric = (Path(__file__).resolve().parents[2] / "loop" / "review"
                   / "rubric.md").read_text(encoding="utf-8")
         self.assertIn("ACCEPTED@M<n>", rubric)
         self.assertIn("7. **Accepted debt is real debt.**", rubric)
