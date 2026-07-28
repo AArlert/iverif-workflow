@@ -111,10 +111,21 @@ def snapshot_pairs(fw, profile=None):
     for d in SNAPSHOT_REF_DIRS:
         for f in sorted((fw / d).rglob("*.md")):
             pairs.append((f, Path("workflow") / f.relative_to(fw)))
-    for name in ("profiles", "discipline"):
-        f = fw / "docs" / ("%s.md" % name)
+    f = fw / "docs" / "discipline.md"
+    if f.exists():
+        pairs.append((f, Path("workflow") / "discipline.md"))
+    # Profile contract: a project receives only its own profile's file, as
+    # workflow/profile.md. "all" (framework-side manifest) lists both
+    # sources under their canon names.
+    if profile == "all":
+        for p in ("learning", "copilot"):
+            f = fw / "docs" / ("profile.%s.md" % p)
+            if f.exists():
+                pairs.append((f, Path("workflow") / ("profile.%s.md" % p)))
+    elif profile in ("learning", "copilot"):
+        f = fw / "docs" / ("profile.%s.md" % profile)
         if f.exists():
-            pairs.append((f, Path("workflow") / ("%s.md" % name)))
+            pairs.append((f, Path("workflow") / "profile.md"))
     skills = SKILLS_COMMON + (SKILLS_COPILOT
                               if profile in ("all", "copilot") else ())
     for name in skills:
@@ -220,8 +231,8 @@ def do_pull(fw, proj):
         print("rendered .claude/agents/%s" % out_name)
     if profile is None:
         print("note: no iverif.json yet — pulled the common set only; "
-              "create iverif.json (see workflow/profiles.md) and re-pull "
-              "to render the agent suite")
+              "create iverif.json (profile: learning|copilot) and re-pull "
+              "to get the profile contract + agent suite")
 
     print("pulled framework %s: %d files into scripts/ + workflow/ + "
           ".claude/skills/" % (ver, len(files)))

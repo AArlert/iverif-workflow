@@ -12,7 +12,7 @@ overrides individual keys.
 | Key | Required | Default | Meaning |
 |---|---|---|---|
 | `framework` | recommended | — | Framework version this project last pulled (informational; `fwsync --pull` updates it, diffs make upgrades visible) |
-| `profile` | **yes** | — | `learning` or `copilot` — see docs/profiles.md |
+| `profile` | **yes** | — | `learning` or `copilot` — see the pinned `workflow/profile.md` |
 | `project_name` | **yes** | — | Used in handover banners and regression summaries |
 | `columns_preset` | no | `en` | `en` or `zh` — table column names (legacy repos keep `zh` and change zero docs) |
 | `columns_override` | no | `{}` | Per-key deviations, e.g. `{"fm_module": "组件"}` for floo_axi_chimney |

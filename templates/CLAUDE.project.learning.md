@@ -4,7 +4,7 @@
 
 # {{PROJECT_NAME}} — CLAUDE.md
 
-Profile: **{{PROFILE}}** (see `workflow/profiles.md`). The workflow rules
+Profile: **{{PROFILE}}** (see `workflow/profile.md`). The workflow rules
 live in the `workflow/` snapshot — read them there (offline-safe); do not
 restate or fork them here.
 

@@ -44,12 +44,3 @@ UVM_WARNING :    0
 UVM_ERROR :    0
 UVM_FATAL :    0
 ```
-
-## Relation to the design doc's EV-xxxx.yaml
-
-The founding design doc sketched YAML evidence records. The canon keeps the
-doc's **intent** — machine-readable, spec-traceable, replayable — but the
-carrier is the log excerpt above: it is already proven in two projects, needs
-no YAML parser (kernel is stdlib-only), and is itself the anti-forgery
-anchor (an excerpt of a log that never existed is much harder to fake
-plausibly than a YAML file). Structured fields ride in `#` header comments.

@@ -54,8 +54,12 @@ class TestInit(FwsyncBase):
         self.assertTrue(
             (self.proj / "workflow" / "signoff" / "six_questions.md")
             .exists())
-        self.assertTrue(
-            (self.proj / "workflow" / "profiles.md").exists())
+        # Profile contract arrives as workflow/profile.md — only the
+        # project's own profile, selected at sync (no in-file markers).
+        prof = ((self.proj / "workflow" / "profile.md")
+                .read_text(encoding="utf-8"))
+        self.assertIn("thinking checklist", prof)
+        self.assertNotIn("Instance isolation (hard rules)", prof)
         rev = (self.proj / ".claude" / "agents" / "rev.md")
         self.assertTrue(rev.exists())
         text = rev.read_text(encoding="utf-8")
@@ -111,6 +115,10 @@ class TestInit(FwsyncBase):
         claude = (self.proj / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertIn("orch", claude)
         self.assertIn("Instance isolation", claude)
+        prof = ((self.proj / "workflow" / "profile.md")
+                .read_text(encoding="utf-8"))
+        self.assertIn("Instance isolation (hard rules)", prof)
+        self.assertNotIn("thinking checklist", prof)
         # skills are part of the pinned snapshot; the whole init is green
         cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
         self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
@@ -193,6 +201,8 @@ class TestGenManifest(FwsyncBase):
         self.assertIn("scripts/svacheck.py", keys)
         self.assertIn("scripts/make/vcs-2018.mk", keys)
         self.assertIn("workflow/schema/evidence_record.md", keys)
+        self.assertIn("workflow/profile.learning.md", keys)
+        self.assertIn("workflow/profile.copilot.md", keys)
         self.assertIn(".claude/skills/handover/SKILL.md", keys)
         self.assertIn(".claude/skills/dispatch/SKILL.md", keys)
         self.assertNotIn("scripts/iverif.manifest.json", keys)
