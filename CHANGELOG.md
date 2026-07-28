@@ -3,6 +3,41 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.3.2 — 2026-07-28
+
+Second-round feedback from `pulp_axi_xbar_copilot` (FB-8, FB-9 in its
+`doc/fw-feedback.md`): two config hooks in the `columns_override` mold —
+projects tune the vendored scripts' advisory wording and evidence
+extraction via `iverif.json`, never by editing `scripts/`.
+
+Folded ahead of the "collect the batch at wrap-up" plan of record
+(`review/*.disposition.md`) because FB-9 is time-boxed: the fix must be
+*available* before the adopter's M2 signoff, or the first coverage-driven
+milestone's evidence permanently lacks its coverage numbers (the
+no-retroactive-rewrite rule, cf. FB-6's surviving empty v0.0.1 records).
+Landing it in canon touches nothing downstream — the pull remains the
+project's own decision.
+
+- **`next_phrases_override`** (FB-8): remap individual `--next` phrases
+  whose role assumptions don't fit — the copilot `undelivered` default
+  says "dispatch DE card", wrong for a vendored-DUT repo whose
+  feature-matrix deliverables are DV-owned tb code. Unknown keys are a
+  hard error (a typo'd override that silently no-ops would recreate the
+  exact advisory drift FB-8 reports); values keep the original
+  `%(...)s` placeholders. `kernel/docs.py` + `kernel/iverif_config.py`.
+- **`key_line_extra`** (FB-9): extra project-side regexes for evidence
+  key-line extraction. Canon `KEY_LINE_RE` stays generic on purpose —
+  project-invented tags (pulp's `[FCOV_SUMMARY]` functional-coverage
+  lines) ride the hook, so coverage numbers land in the excerpt and the
+  evidence stays a self-sufficient reviewable artifact. Invalid regexes
+  are a hard registration-time error. `kernel/evidence.py`. If a second
+  project independently invents a coverage-summary tag, promoting a
+  shared convention into canon becomes a deferred-ledger candidate.
+- Tests: 48 → 50, one fuse per hook. The FB-9 fuse also pins the
+  negative: without the hook, `[FCOV_SUMMARY]` must NOT appear in the
+  excerpt — canon staying generic is itself the guarded behavior.
+- `config/iverif_config.md` documents both keys.
+
 ## 0.3.1 — 2026-07-28
 
 First external review disposed (`review/20260726_gpt_5.6_terra_grill.md`,

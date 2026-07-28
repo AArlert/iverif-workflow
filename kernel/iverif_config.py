@@ -102,6 +102,16 @@ class Config:
                      % "/".join(sorted(COLUMN_PRESETS)))
         self.C = dict(COLUMN_PRESETS[preset])
         self.C.update(raw.get("columns_override", {}))
+        # Advisory-surface hooks, same spirit as columns_override: a project
+        # tunes vendored-script wording/extraction via config, never by
+        # editing scripts/. next_phrases_override remaps `--next` phrases
+        # whose role assumptions don't fit (e.g. a vendored-DUT project whose
+        # feature-matrix deliverables are DV-owned tb code, not DE RTL —
+        # pulp_axi_xbar FB-8); key_line_extra is a list of extra regexes for
+        # evidence key-line extraction (project-specific summary tags such as
+        # a tb's own [FCOV_SUMMARY] — FB-9). Both are validated at use time.
+        self.next_phrases_override = raw.get("next_phrases_override", {})
+        self.key_line_extra = raw.get("key_line_extra", [])
         self.delivery_glob = raw.get("delivery", {}).get("glob", "rtl/{name}.sv")
         self.sim_log = raw.get("sim_log", "sim/out/{test}_{seed}.log")
         self.signoff_glob = raw.get("signoff_glob", "signoff-M{m}*.md")

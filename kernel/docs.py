@@ -546,7 +546,12 @@ def report(errors, warns):
 
 
 # --next action wording per profile: learning speaks to the human doing the
-# work; copilot speaks to orch dispatching cards.
+# work; copilot speaks to orch dispatching cards. The copilot wording assumes
+# the common project shape (feature-matrix deliverables are DE-owned RTL);
+# projects where that role assumption is wrong (e.g. vendored-DUT repos whose
+# deliverables are DV-owned tb code — pulp_axi_xbar FB-8) remap individual
+# phrases via `next_phrases_override` in iverif.json. Overrides must keep the
+# original phrase's %(...)s placeholders.
 NEXT_PHRASES = {
     "learning": {
         "bug_open_spec": "%(bid)s OPEN (spec issue) → request rev arbitration",
@@ -597,7 +602,13 @@ def cmd_next():
     Pure state-machine derivation — semantic decisions (ownership calls,
     card contents) stay with the human/orch."""
     version, milestone = read_version()
-    P = NEXT_PHRASES[CFG.profile]
+    P = dict(NEXT_PHRASES[CFG.profile])
+    bad = sorted(set(CFG.next_phrases_override) - set(P))
+    if bad:
+        sys.exit("iverif.json next_phrases_override: unknown key(s) %s — "
+                 "valid keys: %s (a typo here would otherwise silently "
+                 "no-op)" % (", ".join(bad), ", ".join(sorted(P))))
+    P.update(CFG.next_phrases_override)
     acts = []  # (priority, text): 0=guard debt, 1=bugs+milestone, 2=progress
 
     # 0) guard debt

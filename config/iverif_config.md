@@ -16,6 +16,8 @@ overrides individual keys.
 | `project_name` | **yes** | — | Used in handover banners and regression summaries |
 | `columns_preset` | no | `en` | `en` or `zh` — table column names (legacy repos keep `zh` and change zero docs) |
 | `columns_override` | no | `{}` | Per-key deviations, e.g. `{"fm_module": "组件"}` for floo_axi_chimney |
+| `next_phrases_override` | no | `{}` | Remap individual `--next` phrases whose role assumptions don't fit the project (e.g. a vendored-DUT repo whose feature-matrix deliverables are DV-owned tb code, not DE RTL — the default copilot `undelivered` phrase says "dispatch DE card"). Keys must exist in the profile's phrase set (`NEXT_PHRASES` in `kernel/docs.py`; unknown keys are a hard error, not a silent no-op) and values must keep the original `%(...)s` placeholders |
+| `key_line_extra` | no | `[]` | Extra regexes for evidence key-line extraction, for project-invented summary tags the generic canon patterns rightly don't know (e.g. a tb's own `[FCOV_SUMMARY]` coverage lines). Keeps evidence self-sufficient — coverage/verdict numbers land in the excerpt instead of requiring a trip back to the source log. Invalid regexes are a hard error at registration time |
 | `delivery.glob` | no | `rtl/{name}.sv` | Where a feature-matrix entry's deliverable lives; learning repos typically `tb/{name}.sv`. Entries not matching `\w+` (e.g. `(all)`) have no delivery notion |
 | `sim_log` | no | `sim/out/{test}_{seed}.log` | Where `make run` leaves logs |
 | `signoff_glob` | no | `signoff-M{m}*.md` | Milestone signoff filename pattern inside `doc/evidence/v0.{m}.*/`. Legacy: ppa `review-m{m}*-milestone.md`, floo `review-M{m}*.md` |

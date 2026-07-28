@@ -219,6 +219,25 @@ class TestProfiles(DocsBase):
         self.assertIn("learning profile", cp.stdout)
         self.assertNotIn("dispatch", cp.stdout.lower())
 
+    def test_next_phrases_override(self):
+        # FB-8 (pulp_axi_xbar): `--next` wording carries role assumptions
+        # ("dispatch DE card") that a vendored-DUT project cannot correct
+        # without editing scripts/. The iverif.json hook remaps a phrase;
+        # an unknown key fails loudly instead of silently no-opping.
+        ov = Path(self.tmp.parent) / (self.tmp.name + "_np")
+        self.addCleanup(shutil.rmtree, ov, True)
+        make_project(ov, overrides={"next_phrases_override": {
+            "unverified": "OVERRIDDEN %(mod)s -> %(scenes)s"}})
+        cp = run(ov, "docs.py", "--next", check=True)
+        self.assertIn("OVERRIDDEN (all) -> M1-01", cp.stdout)
+        bad = Path(self.tmp.parent) / (self.tmp.name + "_npbad")
+        self.addCleanup(shutil.rmtree, bad, True)
+        make_project(bad, overrides={"next_phrases_override": {
+            "no_such_phrase": "x"}})
+        cp = run(bad, "docs.py", "--next")
+        self.assertNotEqual(cp.returncode, 0)
+        self.assertIn("no_such_phrase", cp.stderr + cp.stdout)
+
     def test_copilot_requires_design_prompt_dir(self):
         co = Path(self.tmp.parent) / (self.tmp.name + "_co")
         self.addCleanup(shutil.rmtree, co, True)
