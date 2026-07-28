@@ -27,7 +27,9 @@ BUDGETS = {  # bytes, ~12% headroom over the 0.4.0 diet
     "signoff/rubric.md": 2650,
     "signoff/six_questions.md": 2600,
     "skills/closeout/SKILL.md": 1850,
-    "skills/dispatch/SKILL.md": 3650,
+    # Raised 0.5.4 (reviewed): the signoff-card injection exception is
+    # new operative contract from field data (FB-19), not prose growth.
+    "skills/dispatch/SKILL.md": 4100,
     "skills/evidence/SKILL.md": 1800,
     "skills/handover/SKILL.md": 1100,
     "taxonomy/failure_taxonomy.md": 4100,

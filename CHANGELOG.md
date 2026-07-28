@@ -3,6 +3,22 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.5.4 — 2026-07-28
+
+FB-19 (pulp): the verbatim guard-injection rule was undefined for the
+form "the card's FILES is the whole milestone" — their M2 signoff card
+hit 22 guards / 413 lines, duplicating what rubric #5 already orders rev
+to run live (the card is a snapshot, the ledger is alive; they drift).
+The dispatch self-check gains the principled exception (their suggestion
+①): when the criteria source itself orders the dispatchee to run the
+same query, orch pastes no bodies — deterministic FILES list + the
+command that computed it + hit index lines + a count self-check ("your
+set differs → stop and report"). Same family as FB-16's CMD=:
+self-execution proven beats a relayed snapshot. Functional cards stay
+verbatim. Their meta-point recorded: wherever a rule leaves orch to
+decide whether to follow the rule, that discretion is the gap — same
+shape as FB-18(b). Budget raised (reviewed: new contract).
+
 ## 0.5.3 — 2026-07-28
 
 FB-18 (pulp, blocking their M2 signoff card): 0.5.0's ACCEPTED@M<n>
