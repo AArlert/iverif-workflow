@@ -4,6 +4,27 @@ Genealogy and adaptation records. Operative docs state rules and their
 checks; the "why we chose this shape" stories live here. Anything in this
 file is deliberately invisible to project repos.
 
+## Release tags backfilled v0.3.1..v0.6.1 (2026-07-29)
+
+The release ritual (adoption.md: edit → `make selftest` → `make manifest` →
+bump `VERSION` + `CHANGELOG.md` → commit + tag) mandates a tag per release,
+but tagging silently stopped after v0.3.0 — the 17 releases of the rapid
+0.3.1–0.6.1 cadence (two days) got commits only; v0.7.0 resumed tagging.
+Adjudicated **backfill** over amending the ritual: 0.7.0's upgrade note
+tells adopters to pull tags, so the gap is adopter-facing, not cosmetic.
+Disposition:
+
+- One annotated tag per CHANGELOG version, on that version's bump commit
+  (the commit carrying the version in its subject — e.g. v0.6.1 =
+  `87e2eef`, not the later 0.7.0-C1/C2 commits that still read
+  `VERSION=0.6.1`).
+- Tagger dates set to the tagged commit's date so tag chronology matches
+  release chronology; every message carries a "Retroactive tag, backfilled
+  2026-07-29" trailer — backdating is disclosed, not disguised.
+- All 17 pushed to origin. The ritual text stands unchanged; the rule
+  going forward is the tag is part of the release commit's push, not a
+  separate later step.
+
 ## 0.7.0 structural refactor: the layout is the mental model
 
 Origin: the author reported being unable to rebuild the framework in their
