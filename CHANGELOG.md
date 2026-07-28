@@ -3,6 +3,23 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.4.3 — 2026-07-28
+
+FB-13 + FB-14 (pulp). FB-14 is the third sample of the "didn't run / data
+corrupt, still green" family (FB-11 lint, FB-12 pull).
+
+- **Table structure gate** (FB-14, blocking): docs-check fails any data
+  row whose cell count differs from its header's (testplan /
+  feature-matrix / bugs / waivers) — an unescaped `|` in a cell (RTL
+  or-expressions) shifted columns and CLOSED-state checks could read the
+  wrong cell. Schema now says: escape `|` as `\|`.
+- **Key-line classification** (FB-13): `-assert verbose` per-assertion
+  detail lines no longer eat the 30-line cap as an arbitrary prefix —
+  aggregated per source file (`x_sva.sv: N properties/covers, A attempts,
+  M match`), verdict lines keep the cap, truncation prints
+  `... (K more key lines truncated)` instead of dropping silently.
+- Tests: 60 → 62.
+
 ## 0.4.2 — 2026-07-28
 
 FB-12 (pulp, blocking): a pull executed by the *pinned* fwsync applies the

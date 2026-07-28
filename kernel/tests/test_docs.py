@@ -198,6 +198,21 @@ class TestArchive(DocsBase):
         self.assertIn("nothing to archive", cp.stdout)
 
 
+class TestTableStructure(DocsBase):
+    def test_unescaped_pipe_row_fails_check(self):
+        # pulp FB-14: an unescaped | in a cell shifts later columns and
+        # state gates read the wrong cells — docs-check must catch both
+        # directions (too many / too few cells).
+        bugs = self.doc("bugs.md")
+        bugs.write_text(bugs.read_text(encoding="utf-8")
+                        + "| BUG-1 | OPEN | TB | full=|cnt busted | r "
+                        "| - | - | - |\n", encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--check")
+        self.assertEqual(cp.returncode, 1)
+        self.assertIn("escape literal |", cp.stdout)
+        self.assertIn("bugs.md", cp.stdout)
+
+
 class TestGuards(DocsBase):
     def test_guards_query_matches_paths(self):
         # pulp BUG-0015判例 fuse: a guard that names its victim files must

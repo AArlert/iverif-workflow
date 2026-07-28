@@ -140,6 +140,30 @@ class TestFourQuadrants(EvidenceBase):
         self.assertNotEqual(cp.returncode, 0)
         self.assertIn("key_line_extra", cp.stderr + cp.stdout)
 
+    def test_sva_detail_lines_aggregated_and_truncation_visible(self):
+        # pulp FB-13: hundreds of -assert verbose per-assertion lines ate
+        # the 30-line cap as an arbitrary prefix. They must aggregate per
+        # source file; overflow of real key lines must be visible.
+        details = "".join(
+            '"../tb/sva/a_sva.sv", %d: tb.a.p%d: 12 attempts, 12 match\n'
+            % (10 + i, i) for i in range(20)) + "".join(
+            '"../tb/sva/b_sva.sv", %d: tb.b.c%d: 9 attempts, 7 match\n'
+            % (10 + i, i) for i in range(15))
+        noise = "".join("scoreboard compare ok id=%d\n" % i
+                        for i in range(40))
+        self.write_log(details + noise + UVM_PASS_LOG)
+        cp = self.evidence("--scen", "M1-01", "--test", "fixture_test",
+                           "--seed", "1")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        ev = (self.tmp / "doc" / "evidence" / "v0.1.0"
+              / "M1-01.log").read_text(encoding="utf-8")
+        self.assertIn("a_sva.sv: 20 properties/covers, 240 attempts, "
+                      "240 match", ev)
+        self.assertIn("b_sva.sv: 15 properties/covers, 135 attempts, "
+                      "105 match", ev)
+        self.assertNotIn("tb.a.p3:", ev)          # raw flood stays out
+        self.assertIn("more key lines truncated", ev)
+
     def test_plain_fail_rejected(self):
         self.write_log(PLAIN_FAIL_LOG)
         cp = self.evidence("--scen", "M1-01", "--test", "fixture_test",
