@@ -3,6 +3,34 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.4.2 — 2026-07-28
+
+FB-12 (pulp, blocking): a pull executed by the *pinned* fwsync applies the
+old snapshot-pairing logic to the new framework — 0.3.0's copy looks for
+`docs/profiles.md` (gone in 0.4.x), silently skips the profile contract,
+writes a 25-file manifest, and fw-check passes on the incomplete manifest.
+(The reporter's `--profile` attribution was coincidental — that flag only
+feeds `--init` in every version; the second pull worked because it ran the
+freshly pulled script.) Same failure family as FB-11: "didn't run" shown
+as "passed". Four layers:
+
+- **Bootstrap hop**: a project-side `--pull` now re-execs the framework's
+  own fwsync — the pinned copy's pairing logic can never decide a pull
+  again.
+- **Fail-closed profile**: iverif.json present but profile invalid/missing
+  → refuse the pull instead of degrading to the common set.
+- **Orphan sweep**: previously-pinned files no longer in the set are
+  deleted when pristine (reported when locally edited) — no more stale
+  `workflow/profiles.md` surviving a set change.
+- **fw-check completeness probe**: hash self-consistency cannot see an
+  incompletely-written manifest; the profile contract's presence in the
+  manifest is now itself checked.
+- Schema (from pulp's backfill experience): `paths:` is the *note's
+  scope*, not `ref:`'s location — the width beyond the birth file is the
+  dangerous part. Tests: 57 → 60. Budget gate fired once during this
+  change (failure_record.md +62B) and was answered by trimming, not by
+  raising the cap.
+
 ## 0.4.1 — 2026-07-28
 
 Guard injection — registered guards get a forced consumer (gap reported by

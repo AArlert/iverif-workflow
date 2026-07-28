@@ -225,6 +225,56 @@ class TestSoftAdaptation(FwsyncBase):
         self.assertIn("undeclared", cp.stdout)
 
 
+class TestPullIntegrity(FwsyncBase):
+    def test_pull_bootstraps_framework_fwsync(self):
+        # FB-12 root cause: a pull executed by the PINNED (older) fwsync
+        # applies the old snapshot-pairing logic to the new framework and
+        # silently pulls an incomplete set. The hop must make the pinned
+        # copy's pairing logic irrelevant.
+        self.init_project("--profile", "copilot")
+        pinned = self.proj / "scripts" / "fwsync.py"
+        pinned.write_text(pinned.read_text(encoding="utf-8").replace(
+            "profile.%s.md", "no_such.%s.md"), encoding="utf-8")
+        (self.proj / "workflow" / "profile.md").unlink()
+        cp = run_py(pinned, "--pull")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        self.assertTrue((self.proj / "workflow" / "profile.md").exists())
+
+    def test_pull_fail_closed_on_bad_profile(self):
+        self.init_project()
+        cfgp = self.proj / "iverif.json"
+        cfg = json.loads(cfgp.read_text(encoding="utf-8"))
+        cfg["profile"] = "copliot"  # typo — must refuse, not degrade
+        cfgp.write_text(json.dumps(cfg), encoding="utf-8")
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--pull")
+        self.assertNotEqual(cp.returncode, 0)
+        self.assertIn("refusing a partial pull", cp.stderr + cp.stdout)
+
+    def test_orphan_sweep_and_incomplete_manifest_detected(self):
+        import hashlib
+        self.init_project()
+        orphan = self.proj / "workflow" / "obsolete.md"
+        orphan.write_text("old doc\n", encoding="utf-8")
+        mpath = self.proj / "scripts" / "iverif.manifest.json"
+        m = json.loads(mpath.read_text(encoding="utf-8"))
+        m["files"]["workflow/obsolete.md"] = hashlib.sha256(
+            b"old doc\n").hexdigest()
+        mpath.write_text(json.dumps(m), encoding="utf-8")
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--pull")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        self.assertFalse(orphan.exists())
+        self.assertIn("removed orphan", cp.stdout)
+        # An incomplete manifest (profile contract not pinned) must fail
+        # fw-check even though every listed hash is self-consistent.
+        m = json.loads(mpath.read_text(encoding="utf-8"))
+        del m["files"]["workflow/profile.md"]
+        mpath.write_text(json.dumps(m), encoding="utf-8")
+        (self.proj / "workflow" / "profile.md").unlink()
+        cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
+        self.assertEqual(cp.returncode, 1)
+        self.assertIn("manifest incomplete", cp.stdout)
+
+
 class TestGenManifest(FwsyncBase):
     def test_gen_manifest_covers_snapshot_set(self):
         cp = run_py(self.fw / "kernel" / "fwsync.py", "--gen-manifest")
