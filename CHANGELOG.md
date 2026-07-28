@@ -3,6 +3,15 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.4.5 — 2026-07-28
+
+FB-15 (pulp): `fix_commit` implied "the fix happened in this repo" —
+external fixes (framework pulls, tool/VM upgrades) have no local sha, and
+an environment upgrade produces no commit anywhere. The column now holds
+any *traceable* fix reference — `<sha>` / `<repo>@<sha>` / `env: <change>`
+— schema and gate wording updated; the check stays non-empty; the column
+name stays (renaming = downstream churn, same adjudication as `rca`).
+
 ## 0.4.4 — 2026-07-28
 
 Article-origin vocabulary purged from operative docs (user audit). The

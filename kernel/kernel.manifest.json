@@ -5,7 +5,7 @@
     ".claude/skills/evidence/SKILL.md": "2bfb192baf895e1f8be45468294229f4ab867f5b18f9e06d7c98263fe746dca7",
     ".claude/skills/handover/SKILL.md": "5f67d490b4e2d1210f3b1c30c25b6f0d175dfcb2625f8b1ddfb79d499ed1c1f1",
     "scripts/bump.py": "cd2a2172f5b46ebbdbc2907d3f5098d647249148b3e4721ba470580ee94aa581",
-    "scripts/docs.py": "f254ae186a1bad072eec62df07e0e5e6cf2adfd0357c56fa58750aa1f3444a2a",
+    "scripts/docs.py": "75a1029cc1a25f0f253af908b8cc76401d04a21511fa5f96ac6112ed210b1191",
     "scripts/evidence.py": "896bba11dcb9b223c5d2ebaa0b6c2f139b92e6fe231d826cdfb8539e0c3a2a42",
     "scripts/fwsync.py": "039327244ef85ead22934d9481c26856a50a0714b40f5e6747afef6d9bc40b0a",
     "scripts/iverif_config.py": "cefc56e471b1d738627ff90de1394c9a579f1fd67c26c0bc3e5920a83309dc31",
@@ -21,12 +21,12 @@
     "workflow/profile.copilot.md": "dcc48c2db22c7c19ec50b5aaa3669f47a39053b610d83430d8404f1405d3fa98",
     "workflow/profile.learning.md": "28de55f7bac27fb477aa8079bcc2231ee001a33cb9e7fbed610be04255fdcfa5",
     "workflow/schema/evidence_record.md": "ff583ae7e210c74365c745544c811ee0d55ac488e16c135a2689bfaa7d2a5c71",
-    "workflow/schema/failure_record.md": "2938f78e6c39842c881c8c7a431265e9f58727d4455d52f500549631bcae3b8f",
+    "workflow/schema/failure_record.md": "a9e490a8ea141c1c20c538a56829ffbf419151cbb8aecae180ed5909fb531deb",
     "workflow/schema/testplan_entry.md": "3a60ebb6f60a94ec2c84ee5683bf2e8d801ea6f3b827758bd6cd7c52e4edf61c",
     "workflow/signoff/rubric.md": "5772cee41c4f149ca05470cc240dd28cd8c41a153ec61a959187becddd8b388c",
     "workflow/signoff/six_questions.md": "3dd5df0f48ddd354910c4debe4d5907dabb321d63802943833820ab6642d9865",
     "workflow/taxonomy/failure_taxonomy.md": "c94e5340a19e2afcae0eeffb322a1f2d03d631a7799abefc3d763230fa2d5be6",
     "workflow/taxonomy/rca_template.md": "58ea28f44f6777197131983afbb4065ec43788df0c0a0aaa509681711ada0a88"
   },
-  "version": "0.4.4"
+  "version": "0.4.5"
 }
