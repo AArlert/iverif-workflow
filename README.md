@@ -10,7 +10,7 @@ the next action; agents read it to review; humans read it to trust. Nothing
 is tracked by memory, chat history, or hand-edited status flags.
 
 This repository is the **single source of truth** for that machinery. Project
-repos vendor a hash-pinned snapshot of it and are forbidden from editing the
+repos pin a hash-anchored snapshot of it and are forbidden from editing the
 snapshot in place — improvements flow back here first, then out to every
 project. That is how mechanism drift (the reason this repo exists — see
 [Why this exists](#why-this-exists)) stays dead.
@@ -76,7 +76,11 @@ isolation rules that protect agent pipelines from common-mode errors degrade,
 in the learning profile, into a thinking checklist (e.g. *"derive expected
 values from the spec, never from the RTL you are testing"*).
 
-## Ecosystem
+## First adopters
+
+The framework is DUT-agnostic. Its first adopters run each DUT twice — an
+agent-driven repo (reference answer, workflow stress-test) and a human
+learning repo (same evidence discipline, `rev` agent reviews only):
 
 ```
                     iverif-workflow  (this repo — canon)
@@ -85,18 +89,15 @@ values from the spec, never from the RTL you are testing"*).
       ▼           ▼                ▼                 ▼
  ppa-lite-copilot pulp_axi_xbar_agent floo_axi_chimney_agent   (copilot line)
  ppa_lite         pulp_axi_xbar       floo_axi_chimney         (learning line)
-      APB / packet proc    AXI4 crossbar        AXI-to-NoC chimney
 ```
 
-Each DUT exists twice: an agent-driven repo (reference answer, workflow
-stress-test) and a human learning repo (same evidence discipline, `rev` agent
-reviews only). Both lines share this framework, so their evidence is
-comparable and neither can quietly lower the bar.
+Both lines share this framework, so their evidence is comparable and neither
+can quietly lower the bar.
 
 ## Drift control
 
 - Project repos carry `scripts/iverif.manifest.json`: framework version +
-  sha256 per vendored file. `make fw-check` re-hashes and reports any local
+  sha256 per pinned file. `make fw-check` re-hashes and reports any local
   edit (warn in pre-commit, hard-fail in project CI).
 - Emergency in-project fixes are allowed — the red `fw-check` stays on until
   the fix flows back here and the project re-pulls.

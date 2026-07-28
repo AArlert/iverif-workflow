@@ -49,7 +49,7 @@ class TestInit(FwsyncBase):
         cp = run_py(self.proj / "scripts" / "docs.py", "--handover")
         self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
 
-    def test_init_vendors_workflow_and_renders_agent(self):
+    def test_init_pins_workflow_and_renders_agent(self):
         self.init_project("--project", "my_dut")
         self.assertTrue(
             (self.proj / "workflow" / "signoff" / "six_questions.md")
@@ -140,7 +140,7 @@ class TestDriftDetection(FwsyncBase):
         self.assertIn("modified locally", cp.stdout)
         self.assertIn("scripts/docs.py", cp.stdout)
 
-    def test_missing_vendored_file_detected(self):
+    def test_missing_pinned_file_detected(self):
         (self.proj / "workflow" / "signoff" / "rubric.md").unlink()
         cp = run_py(self.proj / "scripts" / "fwsync.py", "--check")
         self.assertEqual(cp.returncode, 1)
@@ -183,7 +183,7 @@ class TestPull(FwsyncBase):
 
 
 class TestGenManifest(FwsyncBase):
-    def test_gen_manifest_covers_vendor_set(self):
+    def test_gen_manifest_covers_snapshot_set(self):
         cp = run_py(self.fw / "kernel" / "fwsync.py", "--gen-manifest")
         self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
         m = json.loads((self.fw / "kernel" / "kernel.manifest.json")

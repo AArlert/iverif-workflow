@@ -103,7 +103,7 @@ class Config:
         self.C = dict(COLUMN_PRESETS[preset])
         self.C.update(raw.get("columns_override", {}))
         # Advisory-surface hooks, same spirit as columns_override: a project
-        # tunes vendored-script wording/extraction via config, never by
+        # tunes snapshot-script wording/extraction via config, never by
         # editing scripts/. next_phrases_override remaps `--next` phrases
         # whose role assumptions don't fit (e.g. a vendored-DUT project whose
         # feature-matrix deliverables are DV-owned tb code, not DE RTL —
@@ -134,7 +134,7 @@ class Config:
         # UVM_ERROR, so they are judged independently of log_verdict.
         # sva_enforce: a log without the native '-assert verbose' Summary
         # line is FAIL (fail-closed); legacy flows set false until they
-        # adopt the vendored run pattern. sva_baseline: optional path to a
+        # adopt the pinned run pattern. sva_baseline: optional path to a
         # registered total_min/attempted_min floor file (layer 3).
         self.sva_enforce = raw.get("sva_enforce", True)
         self.sva_baseline = raw.get("sva_baseline")

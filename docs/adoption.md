@@ -38,7 +38,7 @@ First VM session: `make smoke`, then the first real
 
 ## 2. Existing learning repo (floo_axi_chimney, at M1 start)
 
-1. Create `iverif.json` **first** (the pull reads it to pick the vendor set
+1. Create `iverif.json` **first** (the pull reads it to pick the snapshot set
    and render the agent suite):
 
 ```json

@@ -1,5 +1,5 @@
 """Test fixture: build a minimal valid project tree in a temp dir, with the
-kernel scripts copied into scripts/ exactly as fwsync vendors them. Tests
+kernel scripts copied into scripts/ exactly as fwsync pins them. Tests
 mutate the tree, run the scripts via subprocess, and assert on exit codes and
 output — the same surface a project sees."""
 import hashlib
@@ -171,7 +171,7 @@ CPU Time: 1.2 seconds
 
 
 def run(root, script, *args, check=False):
-    """Run a vendored kernel script; returns CompletedProcess with utf-8
+    """Run a pinned kernel script; returns CompletedProcess with utf-8
     captured output (emoji-safe on Windows consoles)."""
     env = dict(os.environ)
     env["PYTHONUTF8"] = "1"

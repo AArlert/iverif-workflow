@@ -37,7 +37,7 @@ It is read-only — it never edits state.
   is the thing `docs.py --next` checks for milestone completion.
 - **Signoff ≠ review.** The signoff record *cites* the process reviews
   (`REV-xxx`) plus the spot-check results and states the verdict; it is
-  never a copy of a review file. (Boundary made explicit after
-  floo_axi_chimney's M0, where the two were byte-identical.)
+  never a copy of a review file (one adopter's M0 signoff once turned out
+  byte-identical to its review — that is the failure mode).
 - Contents: machine-condition printout (pasted), spot-check details with
   citations, residual-risk list, verdict.

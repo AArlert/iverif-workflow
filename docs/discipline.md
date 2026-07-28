@@ -58,7 +58,7 @@ over speed; on a trivial task, use judgment.
 - "Mention it" is not a chat remark: if what you noticed matches a
   `failure_taxonomy.md` class, it gets a `doc/bugs.md` row. Registration is
   unconditional.
-- **The vendored snapshot is not surgically editable at all.** `scripts/`,
+- **The pinned snapshot is not surgically editable at all.** `scripts/`,
   `workflow/`, `.claude/skills/` and the rendered `.claude/agents/` come
   from the framework; a fix goes to the framework first, then comes back by
   `fwsync --pull`. `make fw-check` is watching.

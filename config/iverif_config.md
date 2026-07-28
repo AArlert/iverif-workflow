@@ -5,7 +5,7 @@ file that varies between projects — the kernel scripts themselves are
 byte-identical, hash-pinned copies. (stdlib has no jsonschema; this document
 plus `kernel/iverif_config.py`'s load-time checks are the contract.)
 
-Column presets live **inside** `kernel/iverif_config.py` (one vendored file,
+Column presets live **inside** `kernel/iverif_config.py` (one pinned file,
 one source of truth); `iverif.json` only names a preset and optionally
 overrides individual keys.
 
@@ -24,7 +24,7 @@ overrides individual keys.
 | `signoff_glob` | no | `signoff-M{m}*.md` | Milestone signoff filename pattern inside `doc/evidence/v0.{m}.*/`. Legacy: ppa `review-m{m}*-milestone.md`, floo `review-M{m}*.md` |
 | `archive_dir` | no | `doc/archive` | Archive directory (canon). Legacy ppa layout: `doc` (flat `*-archive.md` files) |
 | `fl_schema_enforce` | no | `true` | Validate failure-record detail pages of terminal bugs against `schema/failure_record.md`. Legacy repos with free-form pages set `false` |
-| `sva_enforce` | no | `true` | SVA leg of the log verdict (`svacheck.py`): a log without the native `-assert verbose` Summary line is FAIL (fail-closed — assertion failures never increment UVM_ERROR, so the Summary line is the only structured proof of cleanliness). Legacy flows predating `-assert verbose` set `false` until they adopt the vendored run pattern; detected assertion-failure lines stay fatal either way |
+| `sva_enforce` | no | `true` | SVA leg of the log verdict (`svacheck.py`): a log without the native `-assert verbose` Summary line is FAIL (fail-closed — assertion failures never increment UVM_ERROR, so the Summary line is the only structured proof of cleanliness). Legacy flows predating `-assert verbose` set `false` until they adopt the pinned run pattern; detected assertion-failure lines stay fatal either way |
 | `sva_baseline` | no | — | Optional path to a registered assertion floor file (`{"total_min": N, "attempted_min": M}`). Catches the `$assertoff` / dropped-sva-file bypass class (failures stays 0 while total/attempted sink). Once configured, a missing/corrupt file is a hard error — deleting the baseline is not a bypass. Register at the first milestone that carries SVA; maintain by hand, never auto-adapt |
 | `limits` | no | see below | Rolling-file caps; override sparingly |
 

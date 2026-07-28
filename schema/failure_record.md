@@ -36,13 +36,13 @@ Fixed `##` sections; a checker validates presence + non-emptiness when
 `fl_schema_enforce` is true in `iverif.json` (new repos: on).
 
 ```markdown
-# BUG-0007 — B responses reordered under NoRoB config
+# BUG-0007 — write responses reordered under back-pressure
 
 ## symptom
 One-paragraph observable behavior, with the failing check's message.
 
 ## first_anomaly
-signal: dut.i_rob_wrapper.rsp_valid
+signal: dut.i_rsp_fifo.rsp_valid
 time: 12450ns
 how_found: xdebug trace from the scoreboard mismatch backwards
 (The earliest point where reality diverges from spec — the heart of the

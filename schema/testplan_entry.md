@@ -16,7 +16,7 @@ derive project state from it live — status is never cached anywhere else.
   Write it so a failure is conceivable; "runs without error" is not a
   scenario.
 - `config` — DUT parameterization this scenario runs under (e.g.
-  `NoRoB+XY`, `baseline`). One scenario id per config point that matters.
+  `dualport`, `baseline`). One scenario id per config point that matters.
 - `status` — `🔲` planned / `⚠️` partial / `❌` failing / `✅` passed.
 - `evidence`, `repro` — **script-owned columns.** evidence.py fills them;
   humans and agents leave them as `-`.

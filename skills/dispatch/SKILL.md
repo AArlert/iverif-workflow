@@ -3,7 +3,7 @@ name: dispatch
 description: Dispatch-card assembly (copilot profile, orch only) — assemble inputs per the fixed card templates, pick a model tier, pass the isolation self-check. Run before every subagent dispatch.
 ---
 
-<!-- Canonical: iverif-workflow/skills/dispatch/SKILL.md — vendored, hash-pinned. -->
+<!-- Canonical: iverif-workflow/skills/dispatch/SKILL.md — pinned snapshot. -->
 
 # Dispatch flow (orch only)
 

@@ -1,5 +1,9 @@
 # Vendored DUT snapshot
 
+(“vendor” in this ecosystem refers ONLY to upstream DUT RTL under `vendor/`.
+The framework snapshot under `scripts/`+`workflow/` is a separate mechanism —
+see `make fw-check`.)
+
 Upstream code under `vendor/` is a **read-only snapshot**, SHA-locked below.
 Never edit vendored files directly; behavioral deviations go through the
 P-xxx patch flow so every delta from upstream is recorded, justified, and
