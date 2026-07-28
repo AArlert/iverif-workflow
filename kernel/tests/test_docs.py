@@ -198,6 +198,44 @@ class TestArchive(DocsBase):
         self.assertIn("nothing to archive", cp.stdout)
 
 
+class TestAcceptedState(DocsBase):
+    """FB-17: scheduled debt — neither WONTFIX-as-later nor OPEN-as-decided."""
+    def add_bug(self, status, root="REV-002 accepted, do in M2"):
+        bugs = self.doc("bugs.md")
+        bugs.write_text(bugs.read_text(encoding="utf-8")
+                        + "| BUG-0009 | %s | TB | corner x | TEST=x SEED=1 "
+                        "| %s | - | - |\n" % (status, root),
+                        encoding="utf-8")
+
+    def test_accepted_unexpired_passes_and_due_surfaces(self):
+        self.add_bug("ACCEPTED@M2")   # fixture milestone is M1: unexpired
+        cp = run(self.tmp, "docs.py", "--check")
+        self.assertEqual(cp.returncode, 0, cp.stdout)
+        cp = run(self.tmp, "docs.py", "--next", check=True)
+        self.assertNotIn("accepted debt due", cp.stdout)
+
+    def test_accepted_due_this_milestone_surfaces_in_next(self):
+        self.add_bug("ACCEPTED@M1")   # == current: check ok, next surfaces
+        cp = run(self.tmp, "docs.py", "--check")
+        self.assertEqual(cp.returncode, 0, cp.stdout)
+        cp = run(self.tmp, "docs.py", "--next", check=True)
+        self.assertIn("accepted debt due", cp.stdout)
+        cp = run(self.tmp, "docs.py", "--signoff")
+        self.assertIn("accepted debt due", cp.stdout)
+
+    def test_accepted_overdue_fails_check(self):
+        self.add_bug("ACCEPTED@M0")   # < current milestone: expired
+        cp = run(self.tmp, "docs.py", "--check")
+        self.assertEqual(cp.returncode, 1)
+        self.assertIn("expired", cp.stdout)
+
+    def test_accepted_without_rev_reference_fails(self):
+        self.add_bug("ACCEPTED@M2", root="just later")
+        cp = run(self.tmp, "docs.py", "--check")
+        self.assertEqual(cp.returncode, 1)
+        self.assertIn("rev-signed rationale", cp.stdout)
+
+
 class TestTableStructure(DocsBase):
     def test_unescaped_pipe_row_fails_check(self):
         # pulp FB-14: an unescaped | in a cell shifts later columns and

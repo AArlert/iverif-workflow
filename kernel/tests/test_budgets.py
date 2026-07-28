@@ -17,8 +17,10 @@ BUDGETS = {  # bytes, ~12% headroom over the 0.4.0 diet
     "docs/discipline.md": 5400,
     "docs/profile.copilot.md": 2200,
     "docs/profile.learning.md": 2200,
-    "schema/evidence_record.md": 3100,
-    "schema/failure_record.md": 3850,
+    # Raised 0.5.0 (reviewed): CMD-form records + ACCEPTED@M<n> are new
+    # operative contracts, not prose growth.
+    "schema/evidence_record.md": 3400,
+    "schema/failure_record.md": 4400,
     "schema/testplan_entry.md": 2100,
     "signoff/rubric.md": 2450,
     "signoff/six_questions.md": 2600,

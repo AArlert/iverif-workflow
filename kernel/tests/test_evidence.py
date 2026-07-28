@@ -29,6 +29,54 @@ class EvidenceBase(unittest.TestCase):
         return run(self.tmp, "evidence.py", *args)
 
 
+class TestCmdEvidence(unittest.TestCase):
+    """FB-16: non-sim re-verification (lint/compile/tool criteria)."""
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="iverif_cmd_"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        make_project(self.tmp, overrides={"fl_schema_enforce": False})
+        bugs = self.tmp / "doc" / "bugs.md"
+        bugs.write_text(bugs.read_text(encoding="utf-8")
+                        + "| BUG-0001 | VERIFYING | TB | lint flag gone | "
+                        "TEST=x SEED=1 | flags | abc1234 | - |\n",
+                        encoding="utf-8")
+
+    def ev(self, *args):
+        return run(self.tmp, "evidence.py", *args)
+
+    def test_cmd_pass_with_signature_closes_bug(self):
+        cp = self.ev("--bug", "BUG-0001", "--cmd",
+                     "echo 'Lint-clean: 0 errors'", "--expect", "Lint-clean")
+        self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+        ev = (self.tmp / "doc" / "evidence" / "v0.1.0"
+              / "BUG-0001.log").read_text(encoding="utf-8")
+        self.assertTrue(ev.startswith("CMD: echo"))
+        self.assertIn("Lint-clean: 0 errors", ev)
+        self.assertIn("CLOSED",
+                      (self.tmp / "doc" / "bugs.md")
+                      .read_text(encoding="utf-8"))
+
+    def test_cmd_nonzero_exit_refused(self):
+        cp = self.ev("--bug", "BUG-0001", "--cmd", "false",
+                     "--expect", "x")
+        self.assertNotEqual(cp.returncode, 0)
+        self.assertIn("never evidence", cp.stderr + cp.stdout)
+        self.assertIn("VERIFYING",
+                      (self.tmp / "doc" / "bugs.md")
+                      .read_text(encoding="utf-8"))
+
+    def test_cmd_missing_signature_refused(self):
+        cp = self.ev("--bug", "BUG-0001", "--cmd", "echo ran fine",
+                     "--expect", "Lint-clean")
+        self.assertNotEqual(cp.returncode, 0)
+        self.assertIn("no signature, no evidence", cp.stderr + cp.stdout)
+
+    def test_cmd_without_expect_refused(self):
+        cp = self.ev("--bug", "BUG-0001", "--cmd", "true")
+        self.assertNotEqual(cp.returncode, 0)
+        self.assertIn("--expect", cp.stderr + cp.stdout)
+
+
 class TestFourQuadrants(EvidenceBase):
     def test_uvm_pass_registers_and_backfills(self):
         self.write_log(UVM_PASS_LOG)

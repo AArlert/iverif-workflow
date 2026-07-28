@@ -3,6 +3,28 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.5.0 — 2026-07-28
+
+FB-16 + FB-17 (pulp): the framework's shape assumption "defects reproduce
+in simulation" breaks for vendored-DUT + external-toolchain projects
+(7/28 of pulp's bugs verify via compile/lint/tool output). Two mechanisms:
+
+- **CMD-form evidence** (FB-16): `make evidence BUG=<ID> CMD='<cmd>'
+  EXPECT='<regex>'` runs the re-verification command now — line 1 is
+  `CMD: <command>` (the replay command), fail-closed twice (nonzero exit
+  is never evidence; output with no matched signature is "no visible
+  error", not "checked"). Sim path unchanged; docs-check accepts the
+  CMD-form line 1.
+- **`ACCEPTED@M<n>` bug state** (FB-17): analyzed + rev-signed rationale
+  (docs-check requires a REV reference on the row) + scheduled. Signoff
+  condition 3 passes unexpired accepted debt and blocks due-or-overdue
+  debt; overdue rows fail docs-check; `--next` surfaces due debt in both
+  profiles. Never terminal, never archived — WONTFIX may not mean
+  "later", OPEN may not mean "decided" (their REV-004/REV-010 rulings,
+  now representable instead of forced into a wrong terminal).
+- Budget caps raised for the two schema files (reviewed: new operative
+  contracts, not prose growth). Tests: 62 → 70.
+
 ## 0.4.6 — 2026-07-28
 
 Risk-grading trigger gets an observer (user audit of review rec 4). The
