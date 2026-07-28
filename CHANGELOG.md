@@ -3,6 +3,25 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.5.3 — 2026-07-28
+
+FB-18 (pulp, blocking their M2 signoff card): 0.5.0's ACCEPTED@M<n>
+missed rubric.md — the signoff card's criteria source and the tool gave
+opposite verdicts on condition 3 (a criteria source that contradicts its
+tool devalues every rubric-only item, especially #5's falsification).
+
+- Machine condition 3 in `signoff/rubric.md` now reads "terminal or
+  unexpired ACCEPTED@M<n>", matching the tool.
+- **New human spot check #7** (the substantive half — FB-17's
+  anti-rug-sweep promise was only half-delivered: expiry blocks, but
+  nobody ever examined the rationale): each ACCEPTED row's cited REV
+  record must state a *falsifiable* rationale (which fact, if refuted,
+  voids the ruling); carry-overs re-arbitrated, never auto-extended.
+  Isomorphic to #6, as FB-17 originally argued; reference shape:
+  pulp REV-011 §5.4. `docs.py --signoff` prints it.
+- Fuse: rubric and tool are pinned to agree on condition 3 and both
+  carry #7. Rubric budget raised (reviewed: new contract). Tests: 71→72.
+
 ## 0.5.2 — 2026-07-28
 
 pulp's FB-11 adversarial prototype refuted the 0.4.1-era candidate stamp

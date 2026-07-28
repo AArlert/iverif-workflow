@@ -22,7 +22,9 @@ BUDGETS = {  # bytes, ~12% headroom over the 0.4.0 diet
     "schema/evidence_record.md": 3400,
     "schema/failure_record.md": 4400,
     "schema/testplan_entry.md": 2100,
-    "signoff/rubric.md": 2450,
+    # Raised 0.5.3 (reviewed): condition-3 ACCEPTED wording + spot check
+    # #7 are new operative contract (FB-18), not prose growth.
+    "signoff/rubric.md": 2650,
     "signoff/six_questions.md": 2600,
     "skills/closeout/SKILL.md": 1850,
     "skills/dispatch/SKILL.md": 3650,

@@ -229,6 +229,19 @@ class TestAcceptedState(DocsBase):
         self.assertEqual(cp.returncode, 1)
         self.assertIn("expired", cp.stdout)
 
+    def test_rubric_and_tool_agree_on_condition3(self):
+        # FB-18(a): 0.5.0 updated the tool but not rubric.md — the card's
+        # criteria source and the tool gave opposite verdicts on the same
+        # gate. Pin both surfaces to the ACCEPTED-aware wording, and pin
+        # the #7 rationale spot check (FB-18(b)) on both.
+        rubric = (Path(__file__).resolve().parents[2] / "signoff"
+                  / "rubric.md").read_text(encoding="utf-8")
+        self.assertIn("ACCEPTED@M<n>", rubric)
+        self.assertIn("7. **Accepted debt is real debt.**", rubric)
+        cp = run(self.tmp, "docs.py", "--signoff")
+        self.assertIn("ACCEPTED-unexpired", cp.stdout)
+        self.assertIn("7. accepted debt", cp.stdout)
+
     def test_accepted_without_rev_reference_fails(self):
         self.add_bug("ACCEPTED@M2", root="just later")
         cp = run(self.tmp, "docs.py", "--check")
