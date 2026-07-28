@@ -238,9 +238,14 @@ class TestAcceptedState(DocsBase):
                   / "rubric.md").read_text(encoding="utf-8")
         self.assertIn("ACCEPTED@M<n>", rubric)
         self.assertIn("7. **Accepted debt is real debt.**", rubric)
+        self.assertIn("8. **Chain audit answered.**", rubric)
         cp = run(self.tmp, "docs.py", "--signoff")
         self.assertIn("ACCEPTED-unexpired", cp.stdout)
         self.assertIn("7. accepted debt", cp.stdout)
+        # FB-21: the audit was born for signoff yet nothing consumed it —
+        # --signoff must surface the full report (visibility, not a gate).
+        self.assertIn("8. chain audit answered", cp.stdout)
+        self.assertIn("== chain audit ==", cp.stdout)
 
     def test_accepted_without_rev_reference_fails(self):
         self.add_bug("ACCEPTED@M2", root="just later")
@@ -294,6 +299,19 @@ class TestChainAudit(DocsBase):
         self.assertIn("citing no spec clause: 1 — M1-03", cp.stdout)
         self.assertIn("M1-02 SPEC-1.2.3.4→§1.2.3", cp.stdout)
         self.assertIn("scenarios in no feature-matrix row: 2", cp.stdout)
+
+    def test_uncited_full_print_numeric_order(self):
+        # FB-22: string sort silently truncated the highest-numbered
+        # chapters (the next milestone's territory). Numeric order, no cut.
+        self.doc("spec.md").write_text(
+            "# Spec\n\n### 10.1 late\n### 2.1 early\n", encoding="utf-8")
+        (self.doc("testplan.md")).write_text(
+            "# Testplan\n\n" + _table(EN["tp_header"], [
+                "| M1-01 | M1 | no ref | base | 🔲 | - | - |"]),
+            encoding="utf-8")
+        cp = run(self.tmp, "docs.py", "--chain-audit")
+        self.assertEqual(cp.returncode, 0, cp.stdout)
+        self.assertIn("cited by no scenario: 2 — §2.1, §10.1", cp.stdout)
 
 
 class TestGuards(DocsBase):

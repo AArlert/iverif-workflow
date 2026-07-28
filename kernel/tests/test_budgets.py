@@ -22,9 +22,9 @@ BUDGETS = {  # bytes, ~12% headroom over the 0.4.0 diet
     "schema/evidence_record.md": 3400,
     "schema/failure_record.md": 4400,
     "schema/testplan_entry.md": 2100,
-    # Raised 0.5.3 (reviewed): condition-3 ACCEPTED wording + spot check
-    # #7 are new operative contract (FB-18), not prose growth.
-    "signoff/rubric.md": 2650,
+    # Raised 0.5.3 (#7, FB-18) and 0.6.1 (#8, FB-21): new operative
+    # contract, not prose growth.
+    "signoff/rubric.md": 2950,
     "signoff/six_questions.md": 2600,
     "skills/closeout/SKILL.md": 1850,
     # Raised 0.5.4 (reviewed): the signoff-card injection exception is

@@ -3,6 +3,29 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.6.1 — 2026-07-28
+
+FB-21 + FB-22 (pulp, third strike of the no-consumer family and a
+violation of our own visible-truncation rule — both accepted).
+
+- **chain-audit gets its consumer** (FB-21: born for signoff, invoked by
+  nothing — wired exactly like the lint that stayed broken through
+  M0/M1). Per their prescription "it must be *seen* at signoff, not
+  *green*": `docs.py --signoff` now prints the full audit report inline
+  (machine makes it unmissable), and rubric #8 requires a disposition or
+  written acceptance per gap class (human must answer it); dangling refs
+  are fixed, never accepted. Deliberately NOT a hard gate: 0/23 spec_ref
+  adoption would turn a gate into exemption pressure.
+- **Uncited-sections line: numeric sort, full print** (FB-22): string
+  sort + silent `[:15]` cut exactly the highest-numbered chapters —
+  §7.4.x/§8.x, the M3 territory, including the two sections §5.2.6
+  cites as precedent. The one line that must never be cut, and the cut
+  was invisible. Fuse added.
+- Side observation (fw-feedback table not column-checked): declined for
+  now — the check follows the gates, and no gate reads that table;
+  becomes a deferred candidate when one does.
+- Rubric budget raised (reviewed: #8 is new contract). Tests: 74 → 75.
+
 ## 0.6.0 — 2026-07-28
 
 **Chain audit graduates from the deferred ledger** — its trigger (the
