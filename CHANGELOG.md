@@ -3,6 +3,15 @@
 All framework changes land here. Project repos decide when to `fwsync --pull`
 based on this file; the version they carry is recorded in their `iverif.json`.
 
+## 0.5.1 — 2026-07-28
+
+Guard-injection presentation rule, from pulp's second field use (8 hits:
+4 hard / 4 context, no skimming yet, projected skimming risk past ~10):
+above ~6 hits the dispatch self-check now splits pasted guards into
+**hard** (paths match files the card edits) and **context** (boundary
+hits) — both verbatim; a boundary hit is help, not noise (their words:
+one line of cost turned an ignorable edge into an answerable question).
+
 ## 0.5.0 — 2026-07-28
 
 FB-16 + FB-17 (pulp): the framework's shape assumption "defects reproduce
