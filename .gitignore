@@ -1,10 +1,37 @@
+# VCS / Verdi build+sim products (big files stay out; evidence lives as
+# excerpts under doc/evidence/)
+sim/out/
+csrc/
+simv
+simv.*
+*.daidir/
+ucli.key
+vc_hdrs.h
+novas.*
+verdiLog/
+nWaveLog/
+urgReport/
+*.vdb/
+DVEfiles/
+*.fsdb
+*.vpd
+*.vcd
+*.wlf
+*.key
+
+# Logs: only evidence excerpts under doc/evidence/ may enter git
+*.log
+!doc/evidence/**/*.log
+
 # Python
 __pycache__/
 *.pyc
 
-# Editor / OS junk (same patterns the kernel's junk check hunts in projects)
+# Editor / OS junk (same patterns `make check`'s junk sweep hunts for)
 *.swp
 *.swo
+.*.swp
 *~
+*.orig
 .DS_Store
 Thumbs.db

@@ -1,7 +1,54 @@
 # Changelog
 
-All framework changes land here. Project repos decide when to `fwsync --pull`
-based on this file; the version they carry is recorded in their `iverif.json`.
+All framework changes land here. From 0.8.0 on there is no sync tool — a
+clone tracks its own history and pulls upstream commits by `git
+cherry-pick` when it wants them.
+
+## 0.8.0 — 2026-07-29
+
+**Distillation.** 0.7.x guarded 24 scattered contracts (constitution +
+axiom layer + mechanism index, per-profile docs, a rendering pipeline, a
+hash-pin/manifest/three-drift-state sync tool) with a state machine built to
+keep them from drifting. 0.8.0 answers the same problem a cheaper way:
+shrink the framework surface to a size a person can hold in their head, and
+let git's own history replace the state machine. User ruling — full design
+rationale and the audit trail behind every cut in `DESIGN.md`.
+
+- **Repo is the template.** `git clone` + rename is now the entire
+  onboarding story; `doc/`, `design-prompt/`, `rtl/`, `tb/`, `sim/` ship as
+  empty shells. `CLAUDE.md` (one page: five invariants, the loop, the make
+  table, dispatch grading) is the only required read.
+- **24 contracts → 4.** `loop/` (13 files: taxonomy, failure record, rca
+  template, three dispatch tables, evidence/testplan contracts, six
+  questions, rubric, discipline, two profiles) merges into
+  `workflow/{discipline,bugs,records,review}.md`. The two profiles
+  (learning/copilot) retire — who executes a card is a field on the card,
+  not two parallel doc trees.
+- **`kernel/` → `scripts/`.** `fwsync.py` (init/pull/render/manifest/
+  divergence) and `regress.py` are deleted outright; regress's judgment
+  logic survives as `svacheck.py --judge <log>` (the shared one-log,
+  two-leg primitive), its loop logic as a reference-pattern comment in
+  `scripts/make/vcs-2018.mk` — canon owns the judgment, projects own the
+  loop.
+- **`chain` / `chain-audit` / `signoff-check` → one `check` command**,
+  narrowed by `SCEN=`/`MILESTONE=`. New invariant 5 ("no kill, no trust")
+  gets a machine backing: `make check MILESTONE=<n>` now also requires at
+  least one `KILL` row in `doc/bugs.md` tagged to that milestone.
+- **`harness/` (agent-card + skill rendering) → 5 static `.claude/agents/`
+  cards** (`orch` new; `arch`/`de`/`dv`/`rev` un-rendered from their
+  `.copilot.md` sources), no rendering step.
+- **`CONSTITUTION.md` retires**: its four invariants (now five) live
+  directly in `CLAUDE.md`; the axiom table and mechanism index survive only
+  as history in `DESIGN.md`.
+- **`governance/` folds into one root `DESIGN.md`** (canon-only, safe to
+  delete after cloning); `governance/reviews/` moves to root `reviews/`
+  unchanged.
+- `make commit` replaces `make git` — add+commit only, never push; `git
+  push` stays a separate, manual, human action.
+- `scripts/tests/test_budgets.py` drops its 24-row per-file byte table for
+  one aggregate cap over `CLAUDE.md` + `workflow/`'s 4 files;
+  `test_constitution.py` and `test_fwsync.py` are deleted (they tested
+  machinery this release removes).
 
 ## 0.7.1 — 2026-07-29
 

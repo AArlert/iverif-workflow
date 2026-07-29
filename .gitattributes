@@ -1,10 +1,12 @@
 * text=auto
 
-# Anything executed inside the Linux VM must stay LF even when edited on Windows.
+# Anything executed inside the Linux VM must stay LF even when edited on
+# Windows (CRLF breaks make, hooks, and flists).
 *.py    text eol=lf
 *.mk    text eol=lf
 *.f     text eol=lf
 *.sh    text eol=lf
+*.sv    text eol=lf
+*.svh   text eol=lf
 *.yml   text eol=lf
 Makefile         text eol=lf
-harness/templates/pre-commit text eol=lf
